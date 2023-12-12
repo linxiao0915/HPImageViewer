@@ -99,6 +99,8 @@ namespace HPImageViewer.Rendering
 
             //绘制的Image像素区域
             var roundedImagePixelRect = GetRoundedImagePixelArea(_mat.Width, _mat.Height, renderImagePixelArea);
+
+            var finalRoundedImagePixelRect = new Rect(roundedImagePixelRect.X, roundedImagePixelRect.Y, roundedImagePixelRect.Width, roundedImagePixelRect.Height);
             //剪裁图片
             using var clippedMat = new Mat(_mat, roundedImagePixelRect);
             var deviceDrawingWidth = deviceDrawingArea.Width < 1 ? 1 : deviceDrawingArea.Width;
@@ -132,7 +134,7 @@ namespace HPImageViewer.Rendering
 #endif
             _renderImage = resizeMat.ToWriteableBitmap();
             _renderImage.Freeze();
-            _renderImageRect = renderImagePixelArea;
+            _renderImageRect = finalRoundedImagePixelRect;
             _transformMatrix = renderContext.TransformMatrix;
 #if DEBUG
             stopwatch.Stop();
