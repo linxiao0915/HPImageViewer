@@ -10,10 +10,18 @@
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:tools="clr-namespace:HPImageViewer.Tools"
+  x:Name="ImageViewer"
   d:DesignHeight="450"
   d:DesignWidth="800"
   MouseWheel="ImageControl_OnMouseWheel"
   mc:Ignorable="d">
+  <UserControl.InputBindings>
+    <KeyBinding
+      Key="A"
+      Command="{Binding SelectAllCommand}"
+      Modifiers="Control" />
+    <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
+  </UserControl.InputBindings>
   <b:Interaction.Behaviors>
     <behaviors:ToolOperatingBehavior />
   </b:Interaction.Behaviors>
@@ -135,7 +143,8 @@
           Margin="32,0,0,0"
           Style="{StaticResource MenuItemStyle}"
           ToolTip="Undo"
-          ToolTipService.ShowOnDisabled="True">
+          ToolTipService.ShowOnDisabled="True"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="Undo" />
           </MenuItem.Header>
@@ -144,7 +153,8 @@
           x:Name="ToolBarButtonRedo"
           Style="{DynamicResource MenuItemStyle}"
           ToolTip="Redo"
-          ToolTipService.ShowOnDisabled="True">
+          ToolTipService.ShowOnDisabled="True"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="Redo" />
           </MenuItem.Header>
@@ -172,7 +182,8 @@
         <MenuItem
           x:Name="ToolBarButtonCancelZoomIn"
           Style="{StaticResource MenuItemStyle}"
-          ToolTip="ZoomIn">
+          ToolTip="ZoomIn"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="MagnifyPlus" />
           </MenuItem.Header>
@@ -180,7 +191,8 @@
         <MenuItem
           x:Name="ToolBarButtonCancelZoomOut"
           Style="{StaticResource MenuItemStyle}"
-          ToolTip="ZoomOut">
+          ToolTip="ZoomOut"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="MagnifyMinus" />
           </MenuItem.Header>
@@ -197,6 +209,7 @@
         <MenuItem
           x:Name="ToolBarButtonEllipseGate"
           Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Type tools:ToolEllipse}"
           ToolTip="Ellipse">
           <MenuItem.Header>
             <Path Data="M 11,19 C 7.7,19 5,16.3 5,13 C 5,9.7 7.7,7 11,7 L 11,5 C 6.6,5 3,8.6 3,13 C 3,17.4 6.6,21 11,21 C 15.4,21 19,17.4 19,13 L 17,13 C 17,16.3 14.3,19 11,19 Z M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z" Fill="Black" />
@@ -215,13 +228,22 @@
     <local:ImageView
       x:Name="ImageViewDrawCanvas"
       Grid.Row="1"
-      ClipToBounds="True">
+      ClipToBounds="True"
+      Tag="{Binding ElementName=ImageViewer}">
       <local:ImageView.ContextMenu>
-        <ContextMenu>
+        <ContextMenu x:Name="ContextMenu" DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
           <MenuItem
             x:Name="ResetView"
-            Click="ResetView_Click"
+            Command="{Binding ResetViewCommand}"
             Header="ResetView" />
+          <MenuItem
+            x:Name="Delete"
+            Command="{Binding DeleteCommand}"
+            Header="Delete" />
+          <MenuItem
+            x:Name="SelectAll"
+            Command="{Binding SelectAllCommand}"
+            Header="SelectAll" />
         </ContextMenu>
       </local:ImageView.ContextMenu>
     </local:ImageView>

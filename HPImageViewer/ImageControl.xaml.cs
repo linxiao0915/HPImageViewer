@@ -2,6 +2,7 @@
 using HPImageViewer.Models;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,7 +17,37 @@ namespace HPImageViewer
     {
         public ImageControl()
         {
+            Initialize();
             InitializeComponent();
+
+        }
+        void Initialize()
+        {
+            ResetViewCommand = new ImageViewerCommand(() =>
+            {
+                ImageViewDrawCanvas.ResetView();
+                ImageViewDrawCanvas.InvalidateVisual();
+            });
+
+            DeleteCommand = new ImageViewerCommand(() =>
+            {
+                var selectedROIs = ImageViewDrawCanvas.ROIRenders.Where(n => n.IsSelected).ToList();
+                if (selectedROIs.Any())
+                {
+                    foreach (var selectedROI in selectedROIs)
+                    {
+                        ImageViewDrawCanvas.ROIRenders.Remove(selectedROI);
+                    }
+                    ImageViewDrawCanvas.InvalidateVisual();
+                }
+            });
+
+            SelectAllCommand = new ImageViewerCommand(() =>
+            {
+                ImageViewDrawCanvas.ROIRenders.ForEach(n => n.IsSelected = true);
+                ImageViewDrawCanvas.InvalidateVisual();
+            });
+
         }
 
 
@@ -54,8 +85,13 @@ namespace HPImageViewer
 
         private void ResetView_Click(object sender, RoutedEventArgs e)
         {
-            ImageViewDrawCanvas.ResetView();
-            ImageViewDrawCanvas.InvalidateVisual();
+
         }
+
+        public ICommand ResetViewCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand SelectAllCommand { get; private set; }
+
+
     }
 }

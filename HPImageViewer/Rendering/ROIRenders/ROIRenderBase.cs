@@ -13,6 +13,28 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             _rOIDesc = rOIDesc;
         }
+        //todo: render不应存在brushUI元素
+        SolidColorBrush _brush;
+        protected SolidColorBrush Brush
+        {
+            get
+            {
+                if (_brush == null)
+                {
+                    _brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Color));
+                }
+                return _brush;
+            }
+        }
+        public string Color
+        {
+            get => _rOIDesc.Color;
+            set
+            {
+                _rOIDesc.Color = value;
+                _brush = null;
+            }
+        }
 
         IDrawingCanvas DrawingCanvas { get; }
 

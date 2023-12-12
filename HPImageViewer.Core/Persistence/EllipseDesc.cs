@@ -2,6 +2,10 @@
 {
     public class EllipseDesc : ROIDesc
     {
+        public EllipseDesc()
+        {
+
+        }
         public double CenterX { get; set; }
 
         public double CenterY { get; set; }

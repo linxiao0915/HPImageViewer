@@ -53,7 +53,7 @@ namespace HPImageViewer.Rendering.ROIRenders
         protected override void OnRender(RenderContext renderContext)
         {
             base.OnRender(renderContext);
-            var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(rectangleDesc.Color));
+            var brush = Brush;
             brush.Freeze();
             var originalPoint = new Point(Rectangle.X, Rectangle.Y);
             var transformedPoint = RenderTransform.ToDevice(originalPoint);
@@ -93,10 +93,12 @@ namespace HPImageViewer.Rendering.ROIRenders
         /// <returns></returns>
         public override Point GetHandle(int handleNumber)
         {
+            return RenderTransform.ToDevice(GetRectHandle(Rectangle, handleNumber));
+        }
+
+        internal static Point GetRectHandle(Rect rectangle, int handleNumber)
+        {
             double x, y, xCenter, yCenter;
-
-            var rectangle = Rectangle;
-
             xCenter = rectangle.X + rectangle.Width / 2;
             yCenter = rectangle.Y + rectangle.Height / 2;
             x = rectangle.X;
@@ -137,9 +139,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                     y = yCenter;
                     break;
             }
-
-            return RenderTransform.ToDevice(new Point(x, y));
-
+            return new Point(x, y);
         }
 
         public override int HandleCount => 8;
@@ -207,19 +207,26 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         protected override bool NeedRender(RenderContext renderContext)
         {
-            var deviceRenderOuterBound = RectUtil.GetOuterBoundRectangle(DeviceRectangle, rectangleDesc.StrokeThickness);
+            return NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRectangle, rectangleDesc);
 
-            var deviceRenderInnerBound = RectUtil.GetInnerBoundRectangle(DeviceRectangle, rectangleDesc.StrokeThickness);
-            var renderRect = new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height);
+        }
+
+        internal static bool NeedRender(Rect deviceArea, Rect roiDeviceRect, ROIDesc roiDesc)
+        {
+
+            var deviceRenderOuterBound = RectUtil.GetOuterBoundRectangle(roiDeviceRect, roiDesc.StrokeThickness);
+
+            var deviceRenderInnerBound = RectUtil.GetInnerBoundRectangle(roiDeviceRect, roiDesc.StrokeThickness);
+
             var innerBoundWidth = deviceRenderInnerBound.Width;
             var innerBoundHeight = deviceRenderInnerBound.Height;
             if (innerBoundWidth <= 0 || innerBoundHeight <= 0)
             {
-                return renderRect.IntersectsWith(deviceRenderOuterBound);
+                return deviceArea.IntersectsWith(deviceRenderOuterBound);
             }
 
-            return renderRect.IntersectsWith(deviceRenderOuterBound) && deviceRenderInnerBound.Contains(renderRect) == false;
-
+            return deviceArea.IntersectsWith(deviceRenderOuterBound) && deviceRenderInnerBound.Contains(deviceArea) == false;
         }
+
     }
 }
