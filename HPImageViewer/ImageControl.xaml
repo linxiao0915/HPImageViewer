@@ -1,0 +1,229 @@
+﻿<UserControl
+  x:Class="HPImageViewer.ImageControl"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+  xmlns:behaviors="clr-namespace:HPImageViewer.Behaviors"
+  xmlns:converters="clr-namespace:HPImageViewer.Converters"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:HPImageViewer"
+  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:tools="clr-namespace:HPImageViewer.Tools"
+  d:DesignHeight="450"
+  d:DesignWidth="800"
+  MouseWheel="ImageControl_OnMouseWheel"
+  mc:Ignorable="d">
+  <b:Interaction.Behaviors>
+    <behaviors:ToolOperatingBehavior />
+  </b:Interaction.Behaviors>
+  <UserControl.Resources>
+    <materialDesign:BrushRoundConverter x:Key="BrushRoundConverter" />
+    <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
+      <!--<Setter Property="Padding" Value="8,0"></Setter>-->
+      <Setter Property="OverridesDefaultStyle" Value="True" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="Width" Value="32" />
+      <Setter Property="Margin" Value="14,6,0,6" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type MenuItem}">
+            <Grid ClipToBounds="True">
+              <Border
+                x:Name="templateRoot"
+                Width="{TemplateBinding Width}"
+                Height="{TemplateBinding Height}"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                SnapsToDevicePixels="True" />
+              <Border
+                x:Name="BackgroundRoot"
+                Background="{TemplateBinding Foreground,
+                                             Converter={StaticResource BrushRoundConverter}}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Opacity="0"
+                SnapsToDevicePixels="True" />
+              <materialDesign:Ripple
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="Transparent"
+                Feedback="{TemplateBinding Foreground,
+                                           Converter={StaticResource BrushRoundConverter}}"
+                Focusable="False">
+                <Grid
+                  Margin="{TemplateBinding Padding}"
+                  VerticalAlignment="Center"
+                  Background="Transparent">
+                  <ContentPresenter
+                    x:Name="HeaderPresenter"
+                    VerticalAlignment="Center"
+                    Content="{TemplateBinding Header}"
+                    RecognizesAccessKey="True"
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                </Grid>
+              </materialDesign:Ripple>
+              <Popup
+                x:Name="PART_Popup"
+                AllowsTransparency="True"
+                Focusable="False"
+                IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                Placement="Bottom"
+                PopupAnimation="Slide">
+                <!--  warning, this will cache the inner item as well, consider separating the shadow from the item if possible  -->
+                <Popup.CacheMode>
+                  <BitmapCache EnableClearType="True" SnapsToDevicePixels="True" />
+                </Popup.CacheMode>
+              </Popup>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSuspendingPopupAnimation" Value="True">
+                <Setter TargetName="PART_Popup" Property="PopupAnimation" Value="None" />
+              </Trigger>
+
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="templateRoot" Property="BorderBrush" Value="#FF2196F3" />
+                <Setter TargetName="BackgroundRoot" Property="Background" Value="#FFE0E0E0" />
+                <Setter TargetName="templateRoot" Property="BorderThickness" Value="2" />
+                <Setter TargetName="templateRoot" Property="CornerRadius" Value="2" />
+              </Trigger>
+              <Trigger Property="IsHighlighted" Value="True">
+                <Setter TargetName="BackgroundRoot" Property="Opacity" Value="0.13" />
+                <Setter TargetName="templateRoot" Property="BorderBrush" Value="#FFE0E0E0" />
+                <Setter TargetName="templateRoot" Property="BorderThickness" Value="2" />
+                <Setter TargetName="BackgroundRoot" Property="Background" Value="#FFFAFAFA" />
+                <Setter TargetName="templateRoot" Property="CornerRadius" Value="2" />
+              </Trigger>
+
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value=".3" />
+              </Trigger>
+              <MultiTrigger>
+                <MultiTrigger.Conditions>
+                  <Condition Property="IsChecked" Value="true" />
+                  <Condition Property="IsHighlighted" Value="True" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="templateRoot" Property="BorderBrush" Value="#FF2196F3" />
+              </MultiTrigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Border x:Name="ToolBar">
+      <Menu x:Name="MenuToolBar" Background="White">
+        <!--<Style TargetType="uxMaterialDesign1:NewMaterialDesignPlotPsuedoColorIcon">
+          <Setter Property="Width" Value="24" />
+          <Setter Property="Height" Value="24" />
+        </Style>-->
+        <Menu.Resources>
+          <Style TargetType="materialDesign:PackIcon">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+          </Style>
+        </Menu.Resources>
+        <MenuItem
+          x:Name="ToolBarButtonUndo"
+          Margin="32,0,0,0"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="Undo"
+          ToolTipService.ShowOnDisabled="True">
+          <MenuItem.Header>
+            <materialDesign:PackIcon Kind="Undo" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonRedo"
+          Style="{DynamicResource MenuItemStyle}"
+          ToolTip="Redo"
+          ToolTipService.ShowOnDisabled="True">
+          <MenuItem.Header>
+            <materialDesign:PackIcon Kind="Redo" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonSelect"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Type tools:ToolPointer}"
+          ToolTip="Select"
+          ToolTipService.ShowOnDisabled="True">
+          <MenuItem.Header>
+            <materialDesign:PackIcon Kind="CursorDefaultOutline" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonPan"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Type tools:ToolPan}"
+          ToolTip="Select"
+          ToolTipService.ShowOnDisabled="True">
+          <MenuItem.Header>
+            <materialDesign:PackIcon Kind="Pan" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonCancelZoomIn"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="ZoomIn">
+          <MenuItem.Header>
+            <materialDesign:PackIcon Kind="MagnifyPlus" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonCancelZoomOut"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="ZoomOut">
+          <MenuItem.Header>
+            <materialDesign:PackIcon Kind="MagnifyMinus" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonRectangleGate"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Type tools:ToolRectangle}"
+          ToolTip="Rectangle">
+          <MenuItem.Header>
+            <Path Data="M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z M 17,19 L 5,19 L 5,7 L 11,7 L 11,5 L 3,5 L 3,21 L 19,21 L 19,13 L 17,13 L 17,19 Z" Fill="Black" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="ToolBarButtonEllipseGate"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="Ellipse">
+          <MenuItem.Header>
+            <Path Data="M 11,19 C 7.7,19 5,16.3 5,13 C 5,9.7 7.7,7 11,7 L 11,5 C 6.6,5 3,8.6 3,13 C 3,17.4 6.6,21 11,21 C 15.4,21 19,17.4 19,13 L 17,13 C 17,16.3 14.3,19 11,19 Z M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z" Fill="Black" />
+          </MenuItem.Header>
+        </MenuItem>
+        <MenuItem
+          x:Name="Polygon"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="Polygon">
+          <MenuItem.Header>
+            <Path Data="M 17,15.7 L 10.4,18.6 L 5.4,13.6 L 8.3,7 L 11,7 L 11,5 L 7,5 L 3,14 L 10,21 L 19,17 L 19,13 L 17,13 L 17,15.7 Z M 22,5 L 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 Z" Fill="Black" />
+          </MenuItem.Header>
+        </MenuItem>
+      </Menu>
+    </Border>
+    <local:ImageView
+      x:Name="ImageViewDrawCanvas"
+      Grid.Row="1"
+      ClipToBounds="True">
+      <local:ImageView.ContextMenu>
+        <ContextMenu>
+          <MenuItem
+            x:Name="ResetView"
+            Click="ResetView_Click"
+            Header="ResetView" />
+        </ContextMenu>
+      </local:ImageView.ContextMenu>
+    </local:ImageView>
+  </Grid>
+</UserControl>
