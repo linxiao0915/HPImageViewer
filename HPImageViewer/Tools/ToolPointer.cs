@@ -91,8 +91,14 @@ namespace HPImageViewer.Tools
                 if (Keyboard.IsKeyDown(Key.LeftCtrl) == false && Keyboard.IsKeyDown(Key.LeftCtrl) == false)
                     drawingCanvas.ROIRenders.UnselectAll();
 
-                _selectMode = SelectionMode.NetSelection;
 
+                var transformedPoint = drawingCanvas.CoordTransform.ToDomain(point);
+                var selectionRectangle = new SelectionRectangle() { Left = transformedPoint.X, Top = transformedPoint.Y, Width = 1d, Height = 1d };
+
+                ToolObject.AddNewObject(drawingCanvas, selectionRectangle);
+                selectionRectangle.IsSelected = false;
+
+                _selectMode = SelectionMode.NetSelection;
             }
 
 
@@ -176,22 +182,13 @@ namespace HPImageViewer.Tools
                 drawingCanvas.InvalidateVisual();
             }
 
-            //if (selectMode == SelectionMode.NetSelection)
-            //{
-            //    // Remove old selection rectangle
-            //    ControlPaint.DrawReversibleFrame(
-            //        drawArea.RectangleToScreen(DrawRectangle.GetNormalizedRectangle(startPoint, oldPoint)),
-            //        Color.Black,
-            //        FrameStyle.Dashed);
-
-            //    // Draw new selection rectangle
-            //    ControlPaint.DrawReversibleFrame(
-            //        drawArea.RectangleToScreen(DrawRectangle.GetNormalizedRectangle(startPoint, point)),
-            //        Color.Black,
-            //        FrameStyle.Dashed);
-
-            //    return;
-            //}
+            if (_selectMode == SelectionMode.NetSelection)
+            {
+                // Resize selection rectangle
+                drawingCanvas.ROIRenders[0].MoveHandleTo(5,
+                    point);
+                drawingCanvas.InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -211,16 +208,22 @@ namespace HPImageViewer.Tools
             }
 
 
+            if (_selectMode == SelectionMode.NetSelection)
+            {
+                var r = (SelectionRectangle)drawingCanvas.ROIRenders[0];
+                r.Normalize();
+                var rect = r.Rectangle;
+                drawingCanvas.ROIRenders.Remove(r);
+                foreach (var rOIRenders in drawingCanvas.ROIRenders)
+                {
+                    if (rOIRenders.IntersectsWith(rect))
+                    {
+                        rOIRenders.IsSelected = true;
+                    }
+                }
+            }
 
-            //if ( commandChangeState != null  && wasMove )
-            //{
-            //    // Keep state after moving/resizing and add command to history
-            //    commandChangeState.NewState(drawArea.GraphicsList);
-            //    drawArea.AddCommandToHistory(commandChangeState);
-            //    commandChangeState = null;
-            //}
-
-            this._selectMode = SelectionMode.None;
+            _selectMode = SelectionMode.None;
             drawingCanvas.ReleaseMouseCapture();
             drawingCanvas.InvalidateVisual();
         }

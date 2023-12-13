@@ -38,14 +38,16 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         IDrawingCanvas DrawingCanvas { get; }
 
-        protected override void OnRender(RenderContext renderContext)
+        protected sealed override void OnRender(RenderContext renderContext)
         {
-            ;
             if (IsSelected)
             {
                 DrawTracker(renderContext);
             }
+            OnROIRender(renderContext);
         }
+
+        protected abstract void OnROIRender(RenderContext renderContext);
 
         public abstract int HitTest(Point point);
 
@@ -91,7 +93,7 @@ namespace HPImageViewer.Rendering.ROIRenders
         public Rect GetHandlePoint(int handleNumber)
         {
             var point = GetHandle(handleNumber);
-            return new Rect(point.X - 3, point.Y - 3, 7, 7);
+            return new Rect(point.X - 2, point.Y - 2, 5, 5);
         }
 
         public abstract int HandleCount { get; }
@@ -111,6 +113,11 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         }
 
+        internal virtual bool IntersectsWith(Rect rect)
+        {
+            return false;
+
+        }
     }
 
 

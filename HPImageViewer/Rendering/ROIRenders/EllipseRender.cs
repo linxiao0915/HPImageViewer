@@ -114,9 +114,8 @@ namespace HPImageViewer.Rendering.ROIRenders
             return RectangleRender.NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRectangle, EllipseDesc);
         }
 
-        protected override void OnRender(RenderContext renderContext)
+        protected override void OnROIRender(RenderContext renderContext)
         {
-            base.OnRender(renderContext);
             var center = new Point(CenterX, CenterY);
             var transformedCenter = RenderTransform.ToDevice(center);
             renderContext.DrawingContext.DrawEllipse(Brushes.Transparent, new Pen(Brush, this._rOIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
@@ -130,5 +129,12 @@ namespace HPImageViewer.Rendering.ROIRenders
             var currentVector = new Vector(x, y);
             R = (centerVector - currentVector).Length;
         }
+
+        internal override bool IntersectsWith(Rect rect)
+        {
+            return RectUtil.CircleIntersectsRectangle(CenterX, CenterY, R + _rOIDesc.StrokeThickness / 2, rect);
+        }
+
+
     }
 }

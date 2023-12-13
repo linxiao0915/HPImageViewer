@@ -50,9 +50,8 @@ namespace HPImageViewer.Rendering.ROIRenders
         public Rect Rectangle => RectUtil.GetNormalizedRectangle(rectangleDesc.Left, rectangleDesc.Top, rectangleDesc.Left + rectangleDesc.Width, rectangleDesc.Top + rectangleDesc.Height);
 
 
-        protected override void OnRender(RenderContext renderContext)
+        protected override void OnROIRender(RenderContext renderContext)
         {
-            base.OnRender(renderContext);
             var brush = Brush;
             brush.Freeze();
             var originalPoint = new Point(Rectangle.X, Rectangle.Y);
@@ -228,5 +227,9 @@ namespace HPImageViewer.Rendering.ROIRenders
             return deviceArea.IntersectsWith(deviceRenderOuterBound) && deviceRenderInnerBound.Contains(deviceArea) == false;
         }
 
+        internal override bool IntersectsWith(Rect rect)
+        {
+            return Rectangle.IntersectsWith(rect);
+        }
     }
 }

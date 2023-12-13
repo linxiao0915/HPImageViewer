@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace HPImageViewer.Utils
 {
@@ -57,6 +58,24 @@ namespace HPImageViewer.Utils
             }
 
             return new Rect(left, top, innerBoundWidth, innerBoundHeight);
+        }
+
+        public static bool CircleIntersectsRectangle(double circleX, double circleY, double radius, Rect rect)
+        {
+            var rectX = rect.X;
+            var rectY = rect.Y;
+            var width = rect.Width;
+            var height = rect.Height;
+            // 计算圆心到矩形中心的距离
+            // 计算圆心到矩形最近点的距离
+            double closestX = Math.Max(rectX, Math.Min(circleX, rectX + width));
+            double closestY = Math.Max(rectY, Math.Min(circleY, rectY + height));
+            double distanceX = circleX - closestX;
+            double distanceY = circleY - closestY;
+            double distanceSquared = distanceX * distanceX + distanceY * distanceY;
+
+            // 判断距离是否小于圆的半径
+            return distanceSquared <= radius * radius;
         }
 
     }

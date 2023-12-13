@@ -50,7 +50,8 @@ namespace HPImageViewer.Tools
             _isAdding = false;
         }
 
-        protected void AddNewObject(IDrawingCanvas drawingCanvas, ROIRender roiRender)
+
+        public static void AddNewObject(IDrawingCanvas drawingCanvas, ROIRender roiRender)
         {
             roiRender.IsSelected = true;
             roiRender.RenderTransform = drawingCanvas.CoordTransform;
