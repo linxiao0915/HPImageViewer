@@ -10,7 +10,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        void OnMouseDown(IDrawingCanvas drawingCanvas, MouseEventArgs e);
+        void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e);
 
 
         /// <summary>
@@ -26,7 +26,8 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        void OnMouseUp(IDrawingCanvas drawingCanvas, MouseEventArgs e);
+        void OnMouseUp(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e);
+
 
     }
 }

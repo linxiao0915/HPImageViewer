@@ -12,7 +12,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public virtual void OnMouseDown(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public virtual void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
 
         }
@@ -45,7 +45,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public virtual void OnMouseUp(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public virtual void OnMouseUp(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             _isAdding = false;
         }

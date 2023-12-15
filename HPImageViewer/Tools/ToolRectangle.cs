@@ -6,13 +6,12 @@ namespace HPImageViewer.Tools
     internal class ToolRectangle : ToolObject
     {
 
-
         /// <summary>
         /// Left mouse button is pressed
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public override void OnMouseDown(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public override void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             var leftTop = e.GetPosition(drawingCanvas);
             var transformedLeftTop = drawingCanvas.CoordTransform.ToDomain(leftTop);
@@ -23,14 +22,12 @@ namespace HPImageViewer.Tools
         }
 
 
-
         protected override void MoveHandle(IDrawingCanvas drawingCanvas, MouseEventArgs e)
         {
             var point = e.GetPosition(drawingCanvas);
             drawingCanvas.ROIRenders[0].MoveHandleTo(5, point);
             drawingCanvas.InvalidateVisual();
         }
-
 
     }
 }

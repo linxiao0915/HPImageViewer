@@ -42,11 +42,7 @@
       Height="500"
       Margin="32"
       HorizontalAlignment="Left"
-      VerticalAlignment="Top">
-      <hpImageViewer:ImageControl.RenderTransform>
-        <RotateTransform />
-      </hpImageViewer:ImageControl.RenderTransform>
-    </hpImageViewer:ImageControl>
+      VerticalAlignment="Top" />
 
   </Grid>
 </Window>

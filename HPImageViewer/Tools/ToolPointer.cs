@@ -25,7 +25,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public void OnMouseDown(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
 
             _selectMode = SelectionMode.None;
@@ -129,13 +129,13 @@ namespace HPImageViewer.Tools
 
                 for (int i = 0; i < drawingCanvas.ROIRenders.Count; i++)
                 {
-                    int n = drawingCanvas.ROIRenders[i].HitTest(point);
+                    // int n = drawingCanvas.ROIRenders[i].HitTest(point);
 
-                    if (n > 0)
-                    {
-                        //  cursor = drawingCanvas.ROIRenders[i].GetHandleCursor(n);
-                        break;
-                    }
+                    //if (n > 0)
+                    //{
+                    //    //  cursor = drawingCanvas.ROIRenders[i].GetHandleCursor(n);
+                    //    break;
+                    //}
                 }
 
                 if (cursor == null)
@@ -196,7 +196,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public void OnMouseUp(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public void OnMouseUp(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
 
 

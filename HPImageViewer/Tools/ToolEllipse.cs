@@ -10,7 +10,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public override void OnMouseDown(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public override void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             var center = e.GetPosition(drawingCanvas);
 

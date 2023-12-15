@@ -28,7 +28,22 @@ namespace HPImageViewer.Rendering
         public void DrawRectangle(Brush brush, Pen pen, Rect rectangle)
         {
             DrawingContext.DrawRectangle(brush, pen, rectangle);
+
         }
+
+        public void DrawEllipse(Brush brush, Pen pen, Point center, double radiusX, double radiusY)
+        {
+            DrawingContext.DrawEllipse(brush, pen, center, radiusX, radiusY);
+
+        }
+        public void DrawLine(Pen pen, Point point0, Point point1)
+        {
+            DrawingContext.DrawLine(pen, point0, point1);
+        }
+
+
+
+
 
         public double Scale { get; set; } = 1;
         public Matrix TransformMatrix { get; set; }

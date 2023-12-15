@@ -12,7 +12,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public void OnMouseDown(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             _startPanning = true;
             _startPint = e.GetPosition(drawingCanvas);
@@ -47,7 +47,7 @@ namespace HPImageViewer.Tools
         /// </summary>
         /// <param name="drawArea"></param>
         /// <param name="e"></param>
-        public void OnMouseUp(IDrawingCanvas drawingCanvas, MouseEventArgs e)
+        public void OnMouseUp(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             _startPanning = true;
             drawingCanvas.ReleaseMouseCapture();

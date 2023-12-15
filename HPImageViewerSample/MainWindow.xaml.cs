@@ -27,5 +27,7 @@ namespace HPImageViewerSample
             FpsCounter.Text = string.Format("FPS: {0:0.0} / Max: {1:0.0}", 1000.0 / elapsedMilliseconds, 1000.0 / _lowestFrameTime);
             _lastTime = timeNow;
         }
+
+
     }
 }
