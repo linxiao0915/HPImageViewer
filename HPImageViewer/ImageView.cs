@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Media;
 using Point = System.Windows.Point;
 using Rect = System.Windows.Rect;
+using System.Diagnostics;
 
 namespace HPImageViewer
 {
@@ -29,6 +30,7 @@ namespace HPImageViewer
         }
 
         CancellationTokenSource _cancellationTokenSource;
+        private readonly SemaphoreSlim _renderSemaphore = new(1, 1);
         public void InvalidateVisual(Rect? affectedArea)
         {
             VerifyAccess();
@@ -39,7 +41,18 @@ namespace HPImageViewer
                 var renderSession = new RenderSession(this);
                 _cancellationTokenSource = new CancellationTokenSource();
                 InvalidateVisual();
-                renderSession.RenderAsync(_cancellationTokenSource.Token, GetRenderContext(null), InvalidateVisual);
+#if DEBUG
+                // 创建 Stopwatch 实例
+                Stopwatch stopwatch = new Stopwatch();
+                // 开始计时
+                stopwatch.Restart();
+#endif
+                renderSession.RenderAsync(_cancellationTokenSource.Token, GetRenderContext(null), InvalidateVisual, _renderSemaphore);
+
+#if DEBUG
+                stopwatch.Stop();
+                Console.WriteLine($"启动RenderTask 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
+#endif
                 //GetRenderContext(null)
                 // InvalidateVisual();//full render
             }
@@ -49,7 +62,7 @@ namespace HPImageViewer
 
 
 
-        public double Scale =>TransformMatrix.M11;
+        public double Scale => TransformMatrix.M11;
         public Matrix TransformMatrix { get; private set; } = Matrix.Identity;// matrix是值类型，get会得到全新的
         public void ScaleAt(double scaleX, double scaleY, double centerX, double centerY)
         {
@@ -96,24 +109,24 @@ namespace HPImageViewer
             //    _imageRender.Dispose();
             //}
             _image = image;
-            FitImageToArea(image.Width,image.Height);
+            FitImageToArea(image.Width, image.Height);
             InvalidateVisual(null);
         }
 
-        private void FitImageToArea(double imageWidth,double imageHeight)
+        private void FitImageToArea(double imageWidth, double imageHeight)
         {
-            var areaWidth=RenderSize.Width;
-            var areaHeight=RenderSize.Height;
+            var areaWidth = RenderSize.Width;
+            var areaHeight = RenderSize.Height;
 
-            var widthScale=areaWidth/imageWidth;
-            var heightScale=areaHeight/imageHeight;
+            var widthScale = areaWidth / imageWidth;
+            var heightScale = areaHeight / imageHeight;
 
-            var imageZoomingScale=Math.Min(widthScale,heightScale);
+            var imageZoomingScale = Math.Min(widthScale, heightScale);
 
-            var transformMatrix=Matrix.Identity;
-            transformMatrix.Translate((areaWidth-imageWidth)/2,(areaHeight-imageHeight)/2);
-            transformMatrix.ScaleAt(imageZoomingScale,imageZoomingScale,areaWidth/2,areaHeight/2);
-            TransformMatrix=transformMatrix;
+            var transformMatrix = Matrix.Identity;
+            transformMatrix.Translate((areaWidth - imageWidth) / 2, (areaHeight - imageHeight) / 2);
+            transformMatrix.ScaleAt(imageZoomingScale, imageZoomingScale, areaWidth / 2, areaHeight / 2);
+            TransformMatrix = transformMatrix;
         }
 
 

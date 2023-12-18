@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,26 +17,52 @@ namespace HPImageViewer.Rendering
 
         }
 
-        public async Task RenderAsync(CancellationToken cancellationToken, RenderContext renderContext, Action invalidateAction)
+        public async Task RenderAsync(CancellationToken cancellationToken, RenderContext renderContext, Action invalidateAction, SemaphoreSlim semaphoreSlim)
         {
 
-            ImageRender imageRender = null;
-            if (renderContext.Image != null)
+            try
             {
-                await Task.Run(() =>
+                await semaphoreSlim.WaitAsync(cancellationToken);
+            }
+            catch
+            {
+                return;
+            }
+
+            try
+            {
+
+                ImageRender imageRender = null;
+                if (renderContext.Image != null)
+                {            //deviceDrawingArea.Intersect(ImageDeviceRect);
+
+                    await Task.Run(() =>
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return;
+                        }
+                        imageRender = new ImageRender(renderContext.Image) { RenderTransform = renderContext.RenderTransform };
+                        imageRender.Calculate(renderContext);
+
+                    }, cancellationToken);
+
+                }
+
+                if (cancellationToken.IsCancellationRequested == false)
                 {
-                    imageRender = new ImageRender(renderContext.Image) { RenderTransform = renderContext.RenderTransform };
-                    imageRender.Calculate(renderContext);
+                    _drawingCanvas.ImageRender = imageRender;
+                    invalidateAction();
 
-                }, cancellationToken);
+                }
+
 
             }
-
-            if (cancellationToken.IsCancellationRequested == false)
+            finally
             {
-                _drawingCanvas.ImageRender = imageRender;
-                invalidateAction();
+                semaphoreSlim.Release();
             }
+
 
         }
 
