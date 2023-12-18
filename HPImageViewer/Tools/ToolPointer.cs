@@ -93,7 +93,7 @@ namespace HPImageViewer.Tools
 
 
                 var transformedPoint = drawingCanvas.CoordTransform.ToDomain(point);
-                var selectionRectangle = new SelectionRectangle() { Left = transformedPoint.X, Top = transformedPoint.Y, Width = 1d, Height = 1d };
+                var selectionRectangle = new SelectionRectangle() { Left = transformedPoint.X, Top = transformedPoint.Y, Width = 1d / drawingCanvas.Scale, Height = 1d / drawingCanvas.Scale };
 
                 ToolObject.AddNewObject(drawingCanvas, selectionRectangle);
                 selectionRectangle.IsSelected = false;
@@ -186,7 +186,7 @@ namespace HPImageViewer.Tools
             {
                 // Resize selection rectangle
                 drawingCanvas.ROIRenders[0].MoveHandleTo(5,
-                    point);
+                   point);
                 drawingCanvas.InvalidateVisual();
             }
         }
@@ -247,16 +247,8 @@ namespace HPImageViewer.Tools
             var point = e.GetPosition(drawingCanvas);
 
             double radio = 1;
-            if (e.Delta > 0)
-            {
-                radio = 1.1;//(scale + 0.05) / scale;
-                drawingCanvas.Scale *= 1.1;
-            }
-            else
-            {
-                radio = 0.95;
-                drawingCanvas.Scale *= 0.95;
-            }
+            radio = e.Delta > 0 ? 1.1 : //(scale + 0.05) / scale;
+                0.95;
 
             drawingCanvas.ScaleAt(radio, radio, point.X, point.Y);
             drawingCanvas.InvalidateVisual();

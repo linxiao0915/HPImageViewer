@@ -50,18 +50,19 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public override int HitTest(Point point)
         {
-            if (IsSelected)
+            if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R - _rOIDesc.StrokeThickness / 2))
             {
-                for (int i = 1; i <= HandleCount; i++)
-                {
-                    if (GetHandlePoint(i).Contains(point))
-                        return i;
-                }
+                return 0;
             }
 
-            if (PointInObject(point))
-                return 0;
+            if (IsSelected)
+            {
 
+                if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R + _rOIDesc.StrokeThickness / 2))
+                {
+                    return 1;
+                }
+            }
             return -1;
         }
 
@@ -132,7 +133,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         internal override bool IntersectsWith(Rect rect)
         {
-            return RectUtil.CircleIntersectsRectangle(CenterX, CenterY, R + _rOIDesc.StrokeThickness / 2, rect);
+            return MathUtil.CircleIntersectsRectangle(CenterX, CenterY, R + _rOIDesc.StrokeThickness / 2, rect);
         }
 
 

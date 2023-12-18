@@ -1,10 +1,12 @@
-﻿using HPImageViewer.Core.Persistence;
+﻿using System;
+using HPImageViewer.Core.Persistence;
 using HPImageViewer.Rendering;
 using HPImageViewer.Rendering.Layers;
 using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
 using OpenCvSharp;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -47,7 +49,7 @@ namespace HPImageViewer
 
 
 
-        public double Scale { get; set; } = 1.0d;
+        public double Scale =>TransformMatrix.M11;
         public Matrix TransformMatrix { get; private set; } = Matrix.Identity;// matrix是值类型，get会得到全新的
         public void ScaleAt(double scaleX, double scaleY, double centerX, double centerY)
         {
@@ -65,7 +67,6 @@ namespace HPImageViewer
 
         public void ResetView()
         {
-            Scale = 1.0d;
             TransformMatrix = Matrix.Identity;
         }
 
@@ -95,10 +96,25 @@ namespace HPImageViewer
             //    _imageRender.Dispose();
             //}
             _image = image;
+            FitImageToArea(image.Width,image.Height);
             InvalidateVisual(null);
         }
 
+        private void FitImageToArea(double imageWidth,double imageHeight)
+        {
+            var areaWidth=RenderSize.Width;
+            var areaHeight=RenderSize.Height;
 
+            var widthScale=areaWidth/imageWidth;
+            var heightScale=areaHeight/imageHeight;
+
+            var imageZoomingScale=Math.Min(widthScale,heightScale);
+
+            var transformMatrix=Matrix.Identity;
+            transformMatrix.Translate((areaWidth-imageWidth)/2,(areaHeight-imageHeight)/2);
+            transformMatrix.ScaleAt(imageZoomingScale,imageZoomingScale,areaWidth/2,areaHeight/2);
+            TransformMatrix=transformMatrix;
+        }
 
 
 

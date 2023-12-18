@@ -25,8 +25,8 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public bool IsClosed
         {
-            get => PolygonDesc.IsClosed;
-            set => PolygonDesc.IsClosed = value;
+            get;
+            set;
         }
         public PolygonRender() : this(new PolygonDesc())
         {
@@ -60,8 +60,22 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public override int HitTest(Point point)
         {//todo:凸凹多边形处理
+            if (IsSelected)
+            {
 
-            return IsPointInPolygon(point, PolygonDesc) ? 0 : -1;
+                for (int i = 1; i <= HandleCount; i++)
+                {
+                    if (GetHandlePoint(i).Contains(point))
+                        return i;
+                }
+            }
+            if (IsPointInPolygon(RenderTransform.ToDomain(point), PolygonDesc))
+            {
+                return 0;
+            }
+
+            return -1;
+
         }
 
         public override int HandleCount => Points.Count;
@@ -75,7 +89,16 @@ namespace HPImageViewer.Rendering.ROIRenders
                }).ToList();
         }
 
+        protected override void MoveHandleToInteranl(int handleNumber, Point point)
+        {
 
+            Points[handleNumber - 1] = point;
+        }
+
+        public override Point GetHandle(int handleNumber)
+        {
+            return RenderTransform.ToDevice(Points[handleNumber - 1]);
+        }
 
         public static bool IsPointInPolygon(Point point, PolygonDesc polygon)
         {

@@ -47,7 +47,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             set => rectangleDesc.Height = value;
         }
 
-        public Rect Rectangle => RectUtil.GetNormalizedRectangle(rectangleDesc.Left, rectangleDesc.Top, rectangleDesc.Left + rectangleDesc.Width, rectangleDesc.Top + rectangleDesc.Height);
+        public Rect Rectangle => MathUtil.GetNormalizedRectangle(rectangleDesc.Left, rectangleDesc.Top, rectangleDesc.Left + rectangleDesc.Width, rectangleDesc.Top + rectangleDesc.Height);
 
 
         protected override void OnROIRender(RenderContext renderContext)
@@ -61,7 +61,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             renderContext.DrawRectangle(Brushes.Transparent, new Pen(brush, rectangleDesc.StrokeThickness), new Rect(transformedPoint.X, transformedPoint.Y, width, height));
         }
 
-        private Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);
+        protected Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);
 
         public override int HitTest(Point point)
         {
@@ -213,9 +213,9 @@ namespace HPImageViewer.Rendering.ROIRenders
         internal static bool NeedRender(Rect deviceArea, Rect roiDeviceRect, ROIDesc roiDesc)
         {
 
-            var deviceRenderOuterBound = RectUtil.GetOuterBoundRectangle(roiDeviceRect, roiDesc.StrokeThickness);
+            var deviceRenderOuterBound = MathUtil.GetOuterBoundRectangle(roiDeviceRect, roiDesc.StrokeThickness);
 
-            var deviceRenderInnerBound = RectUtil.GetInnerBoundRectangle(roiDeviceRect, roiDesc.StrokeThickness);
+            var deviceRenderInnerBound = MathUtil.GetInnerBoundRectangle(roiDeviceRect, roiDesc.StrokeThickness);
 
             var innerBoundWidth = deviceRenderInnerBound.Width;
             var innerBoundHeight = deviceRenderInnerBound.Height;

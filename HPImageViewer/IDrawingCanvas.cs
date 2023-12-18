@@ -17,7 +17,7 @@ namespace HPImageViewer
         public ImageRender ImageRender { get; set; }
         public void InvalidateVisual(Rect? affectedArea = null);
         public Cursor Cursor { get; set; }
-        public double Scale { get; set; }
+        public double Scale { get; }
         public Matrix TransformMatrix { get; }
         public void ScaleAt(double scaleX, double scaleY, double centerX, double centerY);
         public void PanTo(double deltaX, double deltaY);

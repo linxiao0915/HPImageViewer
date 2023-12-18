@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace HPImageViewer.Utils
 {
-    internal class RectUtil
+    internal class MathUtil
     {
 
         public static Rect GetNormalizedRectangle(double x1, double y1, double x2, double y2)
@@ -76,6 +76,12 @@ namespace HPImageViewer.Utils
 
             // 判断距离是否小于圆的半径
             return distanceSquared <= radius * radius;
+        }
+
+        public static bool IsPointInCircle(Point targetPoint, Point center, double radius)
+        {
+            var distance = Math.Sqrt(Math.Pow(targetPoint.X - center.X, 2) + Math.Pow(targetPoint.Y - center.Y, 2));
+            return distance < radius;
         }
 
     }

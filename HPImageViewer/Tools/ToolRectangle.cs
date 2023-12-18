@@ -15,7 +15,7 @@ namespace HPImageViewer.Tools
         {
             var leftTop = e.GetPosition(drawingCanvas);
             var transformedLeftTop = drawingCanvas.CoordTransform.ToDomain(leftTop);
-            var rectangleRender = new RectangleRender() { Left = transformedLeftTop.X, Top = transformedLeftTop.Y, Width = 1d, Height = 1d };
+            var rectangleRender = new RectangleRender() { Left = transformedLeftTop.X, Top = transformedLeftTop.Y, Width = 1d / drawingCanvas.Scale, Height = 1d / drawingCanvas.Scale };
             AddNewObject(drawingCanvas, rectangleRender);
 
             _isAdding = true;

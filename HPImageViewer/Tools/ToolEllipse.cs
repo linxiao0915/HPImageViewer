@@ -16,7 +16,7 @@ namespace HPImageViewer.Tools
 
             var transformedCenter = drawingCanvas.CoordTransform.ToDomain(center);
 
-            var rectangleRender = new EllipseRender() { CenterX = transformedCenter.X, CenterY = transformedCenter.Y, R = 1d };
+            var rectangleRender = new EllipseRender() { CenterX = transformedCenter.X, CenterY = transformedCenter.Y, R = 1d / drawingCanvas.Scale };
             AddNewObject(drawingCanvas, rectangleRender);
             _isAdding = true;
         }

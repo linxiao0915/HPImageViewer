@@ -51,7 +51,12 @@ namespace HPImageViewer.Tools
         public override void OnMouseUp(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             // base.OnMouseUp(drawingCanvas, e);
-            _floatPoint = null;
+
+            if (_floatPoint != null)
+            {
+                _floatPoint = null;
+                _polygonRender.Points.RemoveAt(_polygonRender.Points.Count - 1);
+            }
 
             if (e.ChangedButton == MouseButton.Left)
             {
@@ -63,6 +68,9 @@ namespace HPImageViewer.Tools
                     _polygonRender = new PolygonRender();
                     AddNewObject(drawingCanvas, _polygonRender);
                 }
+
+
+
                 _polygonRender.Points.Add(transformedStartPoint);
                 _isAdding = true;
                 drawingCanvas.InvalidateVisual();
@@ -71,9 +79,8 @@ namespace HPImageViewer.Tools
 
             if (_isAdding)
             {
-                if (_polygonRender.Points.Count >= 4)
+                if (_polygonRender.Points.Count >= 3)
                 {
-                    _polygonRender.Points.RemoveAt(_polygonRender.Points.Count - 1);
                     _polygonRender.IsClosed = true;
                 }
                 else
