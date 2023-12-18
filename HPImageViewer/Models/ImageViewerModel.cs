@@ -14,7 +14,7 @@ namespace HPImageViewer.Models
 
         public void InvalidImageViewer()
         {
-            _drawingCanvas?.InvalidateVisual();
+            _drawingCanvas?.Rerender();
         }
 
         public void SetDocument(ImageViewerDesc imageViewerDesc)

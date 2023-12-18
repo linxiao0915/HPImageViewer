@@ -31,7 +31,7 @@ namespace HPImageViewer
 
         CancellationTokenSource _cancellationTokenSource;
         private readonly SemaphoreSlim _renderSemaphore = new(1, 1);
-        public void InvalidateVisual(Rect? affectedArea)
+        public void Rerender(Rect? affectedArea = null)
         {
             VerifyAccess();
 
@@ -81,6 +81,7 @@ namespace HPImageViewer
         public void ResetView()
         {
             TransformMatrix = Matrix.Identity;
+            this.Rerender(null);
         }
 
         private RenderTransform _RenderTransform;
@@ -110,7 +111,7 @@ namespace HPImageViewer
             //}
             _image = image;
             FitImageToArea(image.Width, image.Height);
-            InvalidateVisual(null);
+            Rerender(null);
         }
 
         private void FitImageToArea(double imageWidth, double imageHeight)

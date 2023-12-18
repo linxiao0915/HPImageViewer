@@ -105,7 +105,7 @@ namespace HPImageViewer.Tools
             lastPoint.X = point.X;
             lastPoint.Y = point.Y;
             drawingCanvas.CaptureMouse();
-            drawingCanvas.InvalidateVisual();
+            drawingCanvas.Rerender();
 
         }
 
@@ -165,7 +165,7 @@ namespace HPImageViewer.Tools
                 {
                     resizedObject.MoveHandleTo(resizedObjectHandle, point);
                     // drawingCanvas.SetDirty();
-                    drawingCanvas.InvalidateVisual();
+                    drawingCanvas.Rerender();
                 }
             }
 
@@ -179,7 +179,7 @@ namespace HPImageViewer.Tools
 
                 drawingCanvas.Cursor = Cursors.SizeAll;
                 // drawArea.SetDirty();
-                drawingCanvas.InvalidateVisual();
+                drawingCanvas.Rerender();
             }
 
             if (_selectMode == SelectionMode.NetSelection)
@@ -187,7 +187,7 @@ namespace HPImageViewer.Tools
                 // Resize selection rectangle
                 drawingCanvas.ROIRenders[0].MoveHandleTo(5,
                    point);
-                drawingCanvas.InvalidateVisual();
+                drawingCanvas.Rerender();
             }
         }
 
@@ -225,7 +225,7 @@ namespace HPImageViewer.Tools
 
             _selectMode = SelectionMode.None;
             drawingCanvas.ReleaseMouseCapture();
-            drawingCanvas.InvalidateVisual();
+            drawingCanvas.Rerender();
         }
 
 
@@ -251,7 +251,7 @@ namespace HPImageViewer.Tools
                 0.95;
 
             drawingCanvas.ScaleAt(radio, radio, point.X, point.Y);
-            drawingCanvas.InvalidateVisual();
+            drawingCanvas.Rerender();
         }
     }
 }

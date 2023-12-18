@@ -39,7 +39,7 @@ namespace HPImageViewer.Tools
 
             drawingCanvas.PanTo(currentPoint.X - _startPint.X, currentPoint.Y - _startPint.Y);
             _startPint = currentPoint;
-            drawingCanvas.InvalidateVisual();
+            drawingCanvas.Rerender();
         }
 
         /// <summary>

@@ -39,7 +39,7 @@ namespace HPImageViewer.Tools
                 }
                 polygonRender.Points.Add(transformedStartPoint);
                 _floatPoint = transformedStartPoint;
-                drawingCanvas.InvalidateVisual();
+                drawingCanvas.Rerender();
             }
         }
 
@@ -73,7 +73,7 @@ namespace HPImageViewer.Tools
 
                 _polygonRender.Points.Add(transformedStartPoint);
                 _isAdding = true;
-                drawingCanvas.InvalidateVisual();
+                drawingCanvas.Rerender();
                 return;
             }
 
@@ -90,7 +90,7 @@ namespace HPImageViewer.Tools
                 e.Handled = true;
                 _isAdding = false;
                 _polygonRender = null;
-                drawingCanvas.InvalidateVisual();
+                drawingCanvas.Rerender();
 
             }
         }

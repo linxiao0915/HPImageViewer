@@ -26,7 +26,7 @@ namespace HPImageViewer
             ResetViewCommand = new ImageViewerCommand(() =>
             {
                 ImageViewDrawCanvas.ResetView();
-                ImageViewDrawCanvas.InvalidateVisual();
+
             });
 
             DeleteCommand = new ImageViewerCommand(() =>
@@ -38,14 +38,14 @@ namespace HPImageViewer
                     {
                         ImageViewDrawCanvas.ROIRenders.Remove(selectedROI);
                     }
-                    ImageViewDrawCanvas.InvalidateVisual();
+                    ImageViewDrawCanvas.Rerender();
                 }
             });
 
             SelectAllCommand = new ImageViewerCommand(() =>
             {
                 ImageViewDrawCanvas.ROIRenders.ForEach(n => n.IsSelected = true);
-                ImageViewDrawCanvas.InvalidateVisual();
+                ImageViewDrawCanvas.Rerender();
             });
 
         }

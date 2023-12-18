@@ -15,7 +15,7 @@ namespace HPImageViewer
     {
         public List<ROIRender> ROIRenders { get; set; }
         public ImageRender ImageRender { get; set; }
-        public void InvalidateVisual(Rect? affectedArea = null);
+        public void Rerender(Rect? affectedArea = null);
         public Cursor Cursor { get; set; }
         public double Scale { get; }
         public Matrix TransformMatrix { get; }

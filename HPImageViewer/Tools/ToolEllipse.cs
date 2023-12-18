@@ -27,7 +27,7 @@ namespace HPImageViewer.Tools
         //{
         //    var point = e.GetPosition(drawingCanvas);
         //    drawingCanvas.ROIRenders[0].MoveHandleTo(5, point);
-        //    drawingCanvas.InvalidateVisual();
+        //    drawingCanvas.Rerender();
         //}
 
     }
