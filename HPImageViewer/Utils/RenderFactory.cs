@@ -16,5 +16,16 @@ namespace HPImageViewer.Utils
         {
             return new RectangleRender(rectangleDesc);
         }
+
+        private static EllipseRender CreateROIRenderInternal(EllipseDesc ellipseDesc)
+        {
+            return new EllipseRender(ellipseDesc);
+        }
+
+
+        private static PolygonRender CreateROIRenderInternal(PolygonDesc polygonDesc)
+        {
+            return new PolygonRender(polygonDesc);
+        }
     }
 }

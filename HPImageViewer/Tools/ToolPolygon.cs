@@ -65,7 +65,7 @@ namespace HPImageViewer.Tools
 
                 if (_polygonRender == null)
                 {
-                    _polygonRender = new PolygonRender();
+                    _polygonRender = new PolygonRender(){IsClosed=false};
                     AddNewObject(drawingCanvas, _polygonRender);
                 }
 

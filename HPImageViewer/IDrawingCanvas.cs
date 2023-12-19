@@ -13,7 +13,7 @@ namespace HPImageViewer
 {
     internal interface IDrawingCanvas : IInputElement
     {
-        public List<ROIRender> ROIRenders { get; set; }
+        public ROIRenderCollection ROIRenders { get; }
         public ImageRender ImageRender { get; set; }
         public void Rerender(Rect? affectedArea = null);
         public Cursor Cursor { get; set; }

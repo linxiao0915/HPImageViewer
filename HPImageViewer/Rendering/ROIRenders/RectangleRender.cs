@@ -12,8 +12,8 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         private RectangleDesc rectangleDesc
         {
-            get => (RectangleDesc)_rOIDesc;
-            set => _rOIDesc = value;
+            get => (RectangleDesc)ROIDesc;
+            set => ROIDesc = value;
         }
 
         public RectangleRender() : this(new RectangleDesc())

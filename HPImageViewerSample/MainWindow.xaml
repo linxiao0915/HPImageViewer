@@ -21,8 +21,8 @@
         Command="{Binding ExecuteOpenImageCommand}"
         FontSize="22"
         Header="打开图片" />
-      <MenuItem FontSize="22" Header="打开文档" />
-      <MenuItem FontSize="22" Header="保存文档" />
+      <MenuItem FontSize="22" Header="打开文档" Command="{Binding ExecuteOpenDocumentCommand}" />
+      <MenuItem FontSize="22" Header="保存文档" Command="{Binding ExecuteSaveDocumentCommand}" />
     </Menu>
     <Border
       Grid.Row="1"
@@ -35,7 +35,7 @@
         FontSize="22"
         Text="aaa" />
     </Border>
-    <hpImageViewer:ImageControl
+    <hpImageViewer:ImageViewer
       x:Name="ImageControl"
       Grid.Row="2"
       Width="800"

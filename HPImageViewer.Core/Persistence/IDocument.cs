@@ -2,8 +2,7 @@
 {
     public interface IDocument
     {
-        ImageViewerDesc ImageViewerDesc { get; }
-        public void SetDocument(ImageViewerDesc imageViewerDesc);
+        ImageViewerDesc ImageViewerDesc { get; set; }
 
     }
 }

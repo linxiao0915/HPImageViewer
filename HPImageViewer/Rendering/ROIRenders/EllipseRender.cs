@@ -20,8 +20,8 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         private EllipseDesc EllipseDesc
         {
-            get => (EllipseDesc)_rOIDesc;
-            set => _rOIDesc = value;
+            get => (EllipseDesc)ROIDesc;
+            set => ROIDesc = value;
         }
 
         public double CenterX
@@ -50,7 +50,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public override int HitTest(Point point)
         {
-            if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R - _rOIDesc.StrokeThickness / 2))
+            if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R - ROIDesc.StrokeThickness / 2))
             {
                 return 0;
             }
@@ -58,7 +58,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             if (IsSelected)
             {
 
-                if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R + _rOIDesc.StrokeThickness / 2))
+                if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R + ROIDesc.StrokeThickness / 2))
                 {
                     return 1;
                 }
@@ -119,7 +119,7 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             var center = new Point(CenterX, CenterY);
             var transformedCenter = RenderTransform.ToDevice(center);
-            renderContext.DrawingContext.DrawEllipse(Brushes.Transparent, new Pen(Brush, this._rOIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
+            renderContext.DrawingContext.DrawEllipse(Brushes.Transparent, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
         }
 
         protected override void MoveHandleToInteranl(int handleNumber, Point point)
@@ -133,7 +133,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         internal override bool IntersectsWith(Rect rect)
         {
-            return MathUtil.CircleIntersectsRectangle(CenterX, CenterY, R + _rOIDesc.StrokeThickness / 2, rect);
+            return MathUtil.CircleIntersectsRectangle(CenterX, CenterY, R + ROIDesc.StrokeThickness / 2, rect);
         }
 
 

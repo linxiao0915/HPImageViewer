@@ -13,8 +13,8 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public PolygonDesc PolygonDesc
         {
-            get => _rOIDesc as PolygonDesc;
-            set => _rOIDesc = value;
+            get => ROIDesc as PolygonDesc;
+            set => ROIDesc = value;
         }
 
         public List<Point> Points
@@ -27,7 +27,7 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             get;
             set;
-        }
+        }=true;
         public PolygonRender() : this(new PolygonDesc())
         {
 
@@ -45,13 +45,13 @@ namespace HPImageViewer.Rendering.ROIRenders
                 for (int i = 0; i < Points.Count - 1; i++)
                 {
 
-                    renderContext.DrawLine(new Pen(Brush, _rOIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
+                    renderContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
 
                 }
 
                 if (IsClosed)
                 {
-                    renderContext.DrawLine(new Pen(Brush, _rOIDesc.StrokeThickness), RenderTransform.ToDevice(Points[Points.Count - 1]), RenderTransform.ToDevice(Points[0]));
+                    renderContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[Points.Count - 1]), RenderTransform.ToDevice(Points[0]));
                 }
             }
 

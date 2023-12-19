@@ -7,11 +7,11 @@ namespace HPImageViewer.Rendering.ROIRenders
 {
     internal abstract class ROIRender : RenderBase, IMovable, IResizable
     {
-        protected ROIDesc _rOIDesc;
+        public ROIDesc ROIDesc { get; protected set; }
 
-        protected ROIRender(ROIDesc rOIDesc)
+        protected ROIRender(ROIDesc roiDesc)
         {
-            _rOIDesc = rOIDesc;
+            ROIDesc = roiDesc;
         }
         //todo: render不应存在brushUI元素
         SolidColorBrush _brush;
@@ -28,10 +28,10 @@ namespace HPImageViewer.Rendering.ROIRenders
         }
         public string Color
         {
-            get => _rOIDesc.Color;
+            get => ROIDesc.Color;
             set
             {
-                _rOIDesc.Color = value;
+                ROIDesc.Color = value;
                 _brush = null;
             }
         }
@@ -61,13 +61,13 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             if (!IsSelected)
                 return;
-            var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(_rOIDesc.Color));
+            var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ROIDesc.Color));
             brush.Freeze();
             for (int i = 1; i <= HandleCount; i++)
             {
                 var rect = GetHandlePoint(i);
                 var drawingContext = renderContext.DrawingContext;
-                drawingContext.DrawRectangle(brush, new Pen(brush, _rOIDesc.StrokeThickness), rect);
+                drawingContext.DrawRectangle(brush, new Pen(brush, ROIDesc.StrokeThickness), rect);
             }
 
         }

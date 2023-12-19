@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using HPImageViewer.Core.Persistence;
 using HPImageViewer.Rendering;
 using HPImageViewer.Rendering.Layers;
@@ -21,8 +22,10 @@ namespace HPImageViewer
     {
         List<IBackgroundLayer> _IBackgroundLayers;
 
-        public List<ROIRender> ROIRenders { get; set; }
-        public List<ROIDesc> ROIDesc { get; set; } = new List<ROIDesc>();
+        public ROIRenderCollection ROIRenders { get; private set; }
+
+
+
         public ImageRender ImageRender
         {
             get; set;
@@ -105,13 +108,9 @@ namespace HPImageViewer
         private void SetImage(Mat image)
         {
             if (image == null) return;
-            //if (_imageRender != null)
-            //{
-            //    _imageRender.Dispose();
-            //}
             _image = image;
             FitImageToArea(image.Width, image.Height);
-            Rerender(null);
+            Rerender();
         }
 
         private void FitImageToArea(double imageWidth, double imageHeight)
@@ -140,10 +139,9 @@ namespace HPImageViewer
                 new CrossHairLayer(),
                 new ViewingInfoLayer(),
             };
-            ROIRenders = new List<ROIRender>()
-            {
-                new RectangleRender(new RectangleDesc()){RenderTransform=this.CoordTransform}
-            };
+
+            SetDocument(new ImageViewerDesc());
+
             //_ROIRender.Add(new RectangleRender(new RectangleDesc()));
 
         }
@@ -156,30 +154,34 @@ namespace HPImageViewer
             var renderContext = GetRenderContext(drawingContext);
             _IBackgroundLayers.ForEach(n => n.Render(renderContext));
             ImageRender?.Render(renderContext);
-            ROIRenders.ForEach(n => n.Render(renderContext));
-        }
-
-        public ImageViewerDesc ImageViewerDesc { get; private set; }
-
-        public void SetDocument(ImageViewerDesc imageViewerDesc)
-        {
-            ROIRenders.Clear();
-            ImageViewerDesc = imageViewerDesc;
-            imageViewerDesc.ROIDescs.ForEach(n =>
+            foreach (var roiRender in ROIRenders)
             {
-                var render = RenderFactory.CreateROIRender(n);
-                render.RenderTransform = CoordTransform;
-                ROIRenders.Add(render);
-
-            });
+                roiRender.Render(renderContext);
+            }
         }
+
+        private ImageViewerDesc _imageViewerDesc;
+        public ImageViewerDesc ImageViewerDesc
+        {
+            get => _imageViewerDesc;
+            set
+            {
+                SetDocument(value);
+            }
+        }
+
+        void SetDocument(ImageViewerDesc imageViewerDesc)
+        {
+            _imageViewerDesc = imageViewerDesc;
+            ROIRenders = ROIRenderCollection.CreateByROIDescs(imageViewerDesc.ROIDescs, CoordTransform);
+            Rerender();
+        }
+
+
 
         private RenderContext GetRenderContext(DrawingContext drawingContext)
         {
             var renderContext = new RenderContext(drawingContext) { Scale = this.Scale, TransformMatrix = this.TransformMatrix, RenderSize = RenderSize };
-            var leftTop = CoordTransform.ToDomain(new Point(0, 0));
-            var rightBottom = CoordTransform.ToDomain(new Point(RenderSize.Width, RenderSize.Height));
-            renderContext.RoiDescs = ROIDesc.ToList();
             renderContext.Image = Image;
             return renderContext;
         }

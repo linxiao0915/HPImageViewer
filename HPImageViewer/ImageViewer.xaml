@@ -1,16 +1,15 @@
 ﻿<UserControl
-  x:Class="HPImageViewer.ImageControl"
+  x:Class="HPImageViewer.ImageViewer"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
   xmlns:behaviors="clr-namespace:HPImageViewer.Behaviors"
-  xmlns:converters="clr-namespace:HPImageViewer.Converters"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:HPImageViewer"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:tools="clr-namespace:HPImageViewer.Tools"
-  x:Name="ImageViewer"
+  x:Name="imageViewer"
   d:DesignHeight="450"
   d:DesignWidth="800"
   MouseWheel="ImageControl_OnMouseWheel"
@@ -230,7 +229,7 @@
       x:Name="ImageViewDrawCanvas"
       Grid.Row="1"
       ClipToBounds="True"
-      Tag="{Binding ElementName=ImageViewer}">
+      Tag="{Binding ElementName=imageViewer}">
       <local:ImageView.ContextMenu>
         <ContextMenu x:Name="ContextMenu" DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
           <MenuItem

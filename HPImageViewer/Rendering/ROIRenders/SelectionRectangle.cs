@@ -8,13 +8,13 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             renderContext.DrawRectangle(
             null,
-                 new Pen(Brushes.White, _rOIDesc.StrokeThickness),
+                 new Pen(Brushes.White, ROIDesc.StrokeThickness),
                  DeviceRectangle);
 
             DashStyle dashStyle = new DashStyle();
             dashStyle.Dashes.Add(4);
 
-            Pen dashedPen = new Pen(Brushes.Black, _rOIDesc.StrokeThickness);
+            Pen dashedPen = new Pen(Brushes.Black, ROIDesc.StrokeThickness);
             dashedPen.DashStyle = dashStyle;
 
 

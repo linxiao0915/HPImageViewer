@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace HPImageViewer.Behaviors
 {
-    internal class ToolOperatingBehavior : Behavior<ImageControl>
+    internal class ToolOperatingBehavior : Behavior<ImageViewer>
     {
         /// <summary>
         /// Called after the behavior is attached to an AssociatedObject.
