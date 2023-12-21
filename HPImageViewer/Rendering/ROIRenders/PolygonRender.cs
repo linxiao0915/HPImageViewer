@@ -138,5 +138,11 @@ namespace HPImageViewer.Rendering.ROIRenders
 
             return false;
         }
+
+        internal override bool IntersectsWith(Rect rect)
+        {
+            //算法：转换成是否存在一条Polygon的line与Rect的相交的问题，存在则Polygon与Rect相交
+            return base.IntersectsWith(rect);
+        }
     }
 }
