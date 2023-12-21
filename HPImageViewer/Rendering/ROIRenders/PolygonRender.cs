@@ -27,7 +27,7 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             get;
             set;
-        }=true;
+        } = true;
         public PolygonRender() : this(new PolygonDesc())
         {
 
@@ -42,16 +42,17 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             if (Points?.Count > 1)
             {
+                var drawingContext = renderContext.DrawingContext;
                 for (int i = 0; i < Points.Count - 1; i++)
                 {
 
-                    renderContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
+                    drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
 
                 }
 
                 if (IsClosed)
                 {
-                    renderContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[Points.Count - 1]), RenderTransform.ToDevice(Points[0]));
+                    drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[Points.Count - 1]), RenderTransform.ToDevice(Points[0]));
                 }
             }
 

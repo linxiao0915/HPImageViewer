@@ -9,7 +9,7 @@ namespace HPImageViewer.Rendering
     internal class RenderContext : IRenderContext
     {
 
-        public RenderContext(DrawingContext drawingContext)
+        public RenderContext(IDrawingContext drawingContext)
         {
             DrawingContext = drawingContext;
         }
@@ -22,28 +22,7 @@ namespace HPImageViewer.Rendering
 
         public OpenCvSharp.Mat Image { get; set; }
 
-        //todo: 移除 DrawingContext，进行UI无关绘制
-        public DrawingContext DrawingContext { get; private set; }
-
-        public void DrawRectangle(Brush brush, Pen pen, Rect rectangle)
-        {
-            DrawingContext.DrawRectangle(brush, pen, rectangle);
-
-        }
-
-        public void DrawEllipse(Brush brush, Pen pen, Point center, double radiusX, double radiusY)
-        {
-            DrawingContext.DrawEllipse(brush, pen, center, radiusX, radiusY);
-
-        }
-        public void DrawLine(Pen pen, Point point0, Point point1)
-        {
-            DrawingContext.DrawLine(pen, point0, point1);
-        }
-
-
-
-
+        public IDrawingContext DrawingContext { get; private set; }
 
         public double Scale { get; set; } = 1;
         public Matrix TransformMatrix { get; set; }

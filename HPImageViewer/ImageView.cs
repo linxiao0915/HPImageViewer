@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections;
+﻿using HPImageViewer.Core;
 using HPImageViewer.Core.Persistence;
 using HPImageViewer.Rendering;
 using HPImageViewer.Rendering.Layers;
 using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
 using OpenCvSharp;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
-using Point = System.Windows.Point;
 using Rect = System.Windows.Rect;
-using System.Diagnostics;
 
 namespace HPImageViewer
 {
@@ -50,7 +47,7 @@ namespace HPImageViewer
                 // 开始计时
                 stopwatch.Restart();
 #endif
-                renderSession.RenderAsync(_cancellationTokenSource.Token, GetRenderContext(null), InvalidateVisual, _renderSemaphore);
+                renderSession.RenderDataAsync(_cancellationTokenSource.Token, GetRenderContext(null), InvalidateVisual, _renderSemaphore);
 
 #if DEBUG
                 stopwatch.Stop();
@@ -181,7 +178,7 @@ namespace HPImageViewer
 
         private RenderContext GetRenderContext(DrawingContext drawingContext)
         {
-            var renderContext = new RenderContext(drawingContext) { Scale = this.Scale, TransformMatrix = this.TransformMatrix, RenderSize = RenderSize };
+            var renderContext = new RenderContext(new WPFDrawingContext(drawingContext)) { Scale = this.Scale, TransformMatrix = this.TransformMatrix, RenderSize = RenderSize };
             renderContext.Image = Image;
             return renderContext;
         }

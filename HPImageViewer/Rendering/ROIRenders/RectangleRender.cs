@@ -58,7 +58,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             var transformedPoint = RenderTransform.ToDevice(originalPoint);
             var width = Rectangle.Width * renderContext.Scale;
             var height = Rectangle.Height * renderContext.Scale;
-            renderContext.DrawRectangle(Brushes.Transparent, new Pen(brush, rectangleDesc.StrokeThickness), new Rect(transformedPoint.X, transformedPoint.Y, width, height));
+            renderContext.DrawingContext.DrawRectangle(Brushes.Transparent, new Pen(brush, rectangleDesc.StrokeThickness), new Rect(transformedPoint.X, transformedPoint.Y, width, height));
         }
 
         protected Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);

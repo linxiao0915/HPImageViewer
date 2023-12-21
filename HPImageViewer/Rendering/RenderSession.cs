@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,8 +6,6 @@ namespace HPImageViewer.Rendering
 {
     internal class RenderSession
     {
-
-
         IDrawingCanvas _drawingCanvas;
 
         public RenderSession(IDrawingCanvas drawingCanvas)
@@ -17,7 +14,7 @@ namespace HPImageViewer.Rendering
 
         }
 
-        public async Task RenderAsync(CancellationToken cancellationToken, RenderContext renderContext, Action invalidateAction, SemaphoreSlim semaphoreSlim)
+        public async Task RenderDataAsync(CancellationToken cancellationToken, RenderContext renderContext, Action invalidateAction, SemaphoreSlim semaphoreSlim)
         {
 
             try
@@ -65,7 +62,6 @@ namespace HPImageViewer.Rendering
 
 
         }
-
 
     }
 }

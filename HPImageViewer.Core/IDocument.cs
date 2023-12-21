@@ -1,4 +1,7 @@
-﻿namespace HPImageViewer.Core.Persistence
+﻿
+using HPImageViewer.Core.Persistence;
+
+namespace HPImageViewer.Core
 {
     public interface IDocument
     {
