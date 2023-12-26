@@ -121,16 +121,12 @@
     </Style>
   </UserControl.Resources>
   <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
-    <Border x:Name="ToolBar">
+
+    <Border
+      x:Name="ToolBar"
+      VerticalAlignment="top"
+      Panel.ZIndex="1">
       <Menu x:Name="MenuToolBar" Background="White">
-        <!--<Style TargetType="uxMaterialDesign1:NewMaterialDesignPlotPsuedoColorIcon">
-          <Setter Property="Width" Value="24" />
-          <Setter Property="Height" Value="24" />
-        </Style>-->
         <Menu.Resources>
           <Style TargetType="materialDesign:PackIcon">
             <Setter Property="Width" Value="24" />
@@ -228,6 +224,7 @@
     <local:ImageView
       x:Name="ImageViewDrawCanvas"
       Grid.Row="1"
+      Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
       ClipToBounds="True"
       Tag="{Binding ElementName=imageViewer}">
       <local:ImageView.ContextMenu>
