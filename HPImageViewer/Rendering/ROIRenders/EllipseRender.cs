@@ -117,9 +117,21 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         protected override void OnROIRender(RenderContext renderContext)
         {
+            if (Brush.IsFrozen == false)
+            {
+                Brush.Freeze();
+            }
+            var fillBrush = IsSelected ? FillBrush : null;
+            if (fillBrush?.IsFrozen == false)
+            {
+                fillBrush.Freeze();
+            }
+
+
             var center = new Point(CenterX, CenterY);
             var transformedCenter = RenderTransform.ToDevice(center);
-            renderContext.DrawingContext.DrawEllipse(Brushes.Transparent, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
+
+            renderContext.DrawingContext.DrawEllipse(fillBrush, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
         }
 
         protected override void MoveHandleToInteranl(int handleNumber, Point point)

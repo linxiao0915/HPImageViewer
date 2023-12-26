@@ -26,6 +26,19 @@ namespace HPImageViewer.Rendering.ROIRenders
                 return _brush;
             }
         }
+        SolidColorBrush _fillBrush;
+        protected SolidColorBrush FillBrush
+        {
+            get
+            {
+                if (_fillBrush == null)
+                {
+                    _fillBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Color));
+                    _fillBrush.Opacity = 0.1;
+                }
+                return _fillBrush;
+            }
+        }
         public string Color
         {
             get => ROIDesc.Color;
