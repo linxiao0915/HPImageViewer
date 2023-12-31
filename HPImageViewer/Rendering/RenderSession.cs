@@ -7,16 +7,16 @@ namespace HPImageViewer.Rendering
     internal class RenderSession
     {
         IDrawingCanvas _drawingCanvas;
-
-        public RenderSession(IDrawingCanvas drawingCanvas)
+        RenderContext _renderContext;
+        public RenderSession(IDrawingCanvas drawingCanvas, RenderContext renderContext)
         {
             _drawingCanvas = drawingCanvas;
+            _renderContext = renderContext;
 
         }
 
-        public async Task RenderDataAsync(CancellationToken cancellationToken, RenderContext renderContext, Action invalidateAction, SemaphoreSlim semaphoreSlim)
+        public async Task RenderDataAsync(CancellationToken cancellationToken, RenderContext renderContext, Func<CancellationToken, Task> invalidateAction, SemaphoreSlim semaphoreSlim)
         {
-
             try
             {
                 await semaphoreSlim.WaitAsync(cancellationToken);
@@ -31,8 +31,7 @@ namespace HPImageViewer.Rendering
 
                 ImageRender imageRender = null;
                 if (renderContext.Image != null)
-                {            //deviceDrawingArea.Intersect(ImageDeviceRect);
-
+                {
                     await Task.Run(() =>
                     {
                         if (cancellationToken.IsCancellationRequested)
@@ -49,10 +48,9 @@ namespace HPImageViewer.Rendering
                 if (cancellationToken.IsCancellationRequested == false)
                 {
                     _drawingCanvas.ImageRender = imageRender;
-                    invalidateAction();
+                    await invalidateAction(cancellationToken);
 
                 }
-
 
             }
             finally
@@ -61,6 +59,13 @@ namespace HPImageViewer.Rendering
             }
 
 
+        }
+
+        public ImageRender RenderData()
+        {
+            var imageRender = new ImageRender(_renderContext.Image) { RenderTransform = _renderContext.RenderTransform };
+            imageRender.Calculate(_renderContext);
+            return imageRender;
         }
 
     }

@@ -5,5 +5,6 @@ namespace HPImageViewer.Core
     {
         public void SetImage(object image);
 
+        void FitImageToArea();
     }
 }

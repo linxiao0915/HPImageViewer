@@ -1,15 +1,18 @@
-﻿using System;
+﻿using HPImageViewer.Core;
+using HPImageViewer.Core.Miscs;
 using HPImageViewer.Core.Persistence;
 using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
+using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Threading.Tasks.Dataflow;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using HPImageViewer.Core;
 
 namespace HPImageViewer
 {
@@ -22,7 +25,19 @@ namespace HPImageViewer
         {
             Initialize();
             InitializeComponent();
+            CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
 
+        }
+        private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+        private double _lastTime = 0.0d;
+        private double _lowestFrameTime = double.MaxValue;
+        private void CompositionTarget_Rendering(object? sender, EventArgs e)
+        {
+            var timeNow = _stopwatch.ElapsedTicks;
+            var elapsedMilliseconds = timeNow - _lastTime;
+            _lowestFrameTime = Math.Min(_lowestFrameTime, elapsedMilliseconds);
+            FpsCounter.Text = $"FPS: {10000000.0 / elapsedMilliseconds:0.0} / Max: {10000000.0 / _lowestFrameTime:0.0}";
+            _lastTime = timeNow;
         }
         void Initialize()
         {
@@ -53,10 +68,8 @@ namespace HPImageViewer
                 }
                 ImageViewDrawCanvas.Rerender();
             });
-
+            ConstructConversionTransformBlock();
         }
-
-
 
 
         public ImageViewerDesc ImageViewerDesc
@@ -64,72 +77,100 @@ namespace HPImageViewer
             get => ImageViewDrawCanvas.ImageViewerDesc;
             set => ImageViewDrawCanvas.ImageViewerDesc = value;
         }
-
+        DataTrafficLimiter _dataTrafficLimiter = new(100, 512 * 512 * 5);
         public void SetImage(object image)
         {
-            lock (_lockObj)
+            //todo:此次加时间戳,并发下也有不严谨的，但是精确度不需要那么高，暂不考虑了；
+            var value = 0;
+            if (image is Mat matImage)
             {
-                _cancellationTokenSource?.Cancel();
-                _cancellationTokenSource = new CancellationTokenSource();
-                SetImageAsync(image, _cancellationTokenSource.Token);
+                value = matImage.Width * matImage.Height;
             }
+            else if (image is BitmapImage bitmapImage)
+            {
+                value = (int)(bitmapImage.Width * bitmapImage.Height);
+
+            }
+            else if (image is Bitmap bitmap)
+            {
+                value = bitmap.Width * bitmap.Height;
+            }
+            //todo:可能存在一个bug，最后一帧得不到显示，因为可能超过流量，need improvement
+            if (_dataTrafficLimiter.TryAdd(value))
+            {
+                _imageConversionActionBlock.Post(new ConversionItem(_stopwatch.ElapsedTicks, image));
+            }
+
 
         }
 
-        private object _lockObj = new object();
-        private CancellationTokenSource _cancellationTokenSource;
-        private async Task SetImageAsync(object image, CancellationToken cancellationToken)
+        public void FitImageToArea()
         {
-
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-            Mat mat = null;
-            try
-            {
-                await Task.Run(() =>
-                {
-                    if (cancellationToken.IsCancellationRequested) return;
-
-                    if (image is Mat)
-                    {
-                        mat = (Mat)image;
-                    }
-                    else if (image is BitmapImage bitmapImage)
-                    {
-                        var writeableBitmap = new WriteableBitmap(bitmapImage);
-                        mat = writeableBitmap.ToMat();
-                    }
-
-                }, cancellationToken);
-                if (mat == null) return;
-                ImageViewDrawCanvas.Image = mat;
-            }
-            catch (TaskCanceledException taskCanceledException)
-            {
-
-            }
-
-
-
+            ImageViewDrawCanvas.FitImageToArea();
         }
 
-
-
-
-        private void ImageControl_OnMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-        }
-
-        private void ResetView_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         public ICommand ResetViewCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public ICommand SelectAllCommand { get; private set; }
+
+
+        private ActionBlock<ConversionItem> _imageConversionActionBlock;
+
+        private long _currentOutputTimestampTick = 0;
+        private readonly object _syncLock = new object();
+        private void ConstructConversionTransformBlock()
+        {
+            var executionDataflowBlockOptions = new ExecutionDataflowBlockOptions();
+            executionDataflowBlockOptions.EnsureOrdered = true;
+            executionDataflowBlockOptions.MaxDegreeOfParallelism = -1;
+            executionDataflowBlockOptions.BoundedCapacity = -1;
+
+            _imageConversionActionBlock = new ActionBlock<ConversionItem>(item =>
+            {
+                var image = item.Image;
+                Mat mat = null;
+                if (image is Mat matImage)
+                {
+                    mat = matImage;
+                }
+                else if (image is BitmapImage bitmapImage)
+                {
+                    var writeableBitmap = new WriteableBitmap(bitmapImage);
+                    mat = writeableBitmap.ToMat();
+                }
+                else if (image is Bitmap bitmap)
+                {
+                    mat = bitmap.ToMat();
+                }
+
+                lock (_syncLock)
+                {
+                    if (item.TimestampTick <= _currentOutputTimestampTick)
+                        return;
+                    _currentOutputTimestampTick = item.TimestampTick;
+                }
+
+                ImageViewDrawCanvas.Image = mat;
+
+
+            }, executionDataflowBlockOptions);
+
+        }
+
+        class ConversionItem
+        {
+            public long TimestampTick { get; }
+            public object Image { get; set; }
+
+            public ConversionItem(long timestampTick, object image)
+            {
+                TimestampTick = timestampTick;
+                Image = image;
+            }
+        }
+
+
 
 
     }

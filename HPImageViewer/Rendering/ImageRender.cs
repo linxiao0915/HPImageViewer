@@ -130,25 +130,25 @@ namespace HPImageViewer.Rendering
 
 #if DEBUG
             // 开始计时
-            stopwatch.Restart();
+            // stopwatch.Restart();
 #endif
             _renderImage = resizeMat.ToWriteableBitmap();
             _renderImage.Freeze();
             _renderImageRect = finalRoundedImagePixelRect;
             _transformMatrix = renderContext.TransformMatrix;
 #if DEBUG
-            stopwatch.Stop();
-            Console.WriteLine($"ToWriteableBitmap 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
+            //stopwatch.Stop();
+            //Console.WriteLine($"ToWriteableBitmap 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
 #endif
 
 #if DEBUG
             // 开始计时
-            stopwatch.Restart();
+            //stopwatch.Restart();
 #endif
 
 #if DEBUG
-            stopwatch.Stop();
-            Console.WriteLine($"DrawingContextDrawing 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
+            //stopwatch.Stop();
+            //Console.WriteLine($"DrawingContextDrawing 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
 #endif
         }
 

@@ -1,15 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HPImageViewer.Core;
+using HPImageViewer.Core.Persistence;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using HPImageViewer.Core;
-using HPImageViewer;
-using System.Reflection.Metadata;
-using HPImageViewer.Core.Persistence;
-using Newtonsoft.Json;
 
 namespace HPImageViewerSample
 {
@@ -35,6 +33,7 @@ namespace HPImageViewerSample
                     bitmap.Freeze();
                     //var image = Cv2.ImRead(selectedFileName);
                     _imageViewer.SetImage(bitmap);
+                    _imageViewer.FitImageToArea();
                 }
                 catch (Exception ex)
                 {

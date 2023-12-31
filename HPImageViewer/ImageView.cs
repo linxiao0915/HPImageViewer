@@ -7,21 +7,48 @@ using HPImageViewer.Utils;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Rect = System.Windows.Rect;
 
 namespace HPImageViewer
 {
     internal class ImageView : FrameworkElement, IDrawingCanvas, IDocument
     {
-        List<IBackgroundLayer> _IBackgroundLayers;
+
+        public ImageView()
+        {
+
+            _IBackgroundLayers = new List<IBackgroundLayer>()
+            {
+                new GridBackgroundLayer(),
+                new CrossHairLayer(),
+                new ViewingInfoLayer(),
+            };
+
+            _renderEngine = new RenderEngine();
+            _renderEngine.RenderRequested += _renderEngine_RenderRequested;
+
+            SetDocument(new ImageViewerDesc());
+
+            //_ROIRender.Add(new RectangleRender(new RectangleDesc()));
+
+        }
+
+        private void _renderEngine_RenderRequested(object? sender, ImageRender e)
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                ImageRender = e;
+                InvalidateVisual();
+            }, DispatcherPriority.Send);
+        }
+
+        private readonly RenderEngine _renderEngine;
+        readonly List<IBackgroundLayer> _IBackgroundLayers;
 
         public ROIRenderCollection ROIRenders { get; private set; }
-
-
 
         public ImageRender ImageRender
         {
@@ -29,29 +56,34 @@ namespace HPImageViewer
 
         }
 
-        CancellationTokenSource _cancellationTokenSource;
-        private readonly SemaphoreSlim _renderSemaphore = new(1, 1);
-        public void Rerender(Rect? affectedArea = null)
+
+        public void Rerender(Rect? affectedArea = null, bool immediate = true)
         {
-            VerifyAccess();
 
             if (affectedArea.HasValue == false)
             {
-                _cancellationTokenSource?.Cancel();
-                var renderSession = new RenderSession(this);
-                _cancellationTokenSource = new CancellationTokenSource();
-                InvalidateVisual();
-#if DEBUG
-                // 创建 Stopwatch 实例
-                Stopwatch stopwatch = new Stopwatch();
-                // 开始计时
-                stopwatch.Restart();
-#endif
-                renderSession.RenderDataAsync(_cancellationTokenSource.Token, GetRenderContext(null), InvalidateVisual, _renderSemaphore);
+                if (immediate)
+                {
+                    InvalidateVisual();
+
+                }
 
 #if DEBUG
-                stopwatch.Stop();
-                Console.WriteLine($"启动RenderTask 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
+                //// 创建 Stopwatch 实例
+                //var stopwatch = new Stopwatch();
+                //// 开始计时
+                //stopwatch.Restart();
+#endif
+                if (Image != null)//临时代码，由于目前只渲染image data
+                {
+                    var renderSession = new RenderSession(this, GetRenderContext(null));
+                    _renderEngine.PostRenderSession(renderSession);
+                }
+
+
+#if DEBUG
+                //stopwatch.Stop();
+                //Console.WriteLine($"启动RenderTask 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
 #endif
                 //GetRenderContext(null)
                 // InvalidateVisual();//full render
@@ -59,8 +91,6 @@ namespace HPImageViewer
 
             //todo: mark render with dirty flag，partial rendering
         }
-
-
 
         public double Scale => TransformMatrix.M11;
         public Matrix TransformMatrix { get; private set; } = Matrix.Identity;// matrix是值类型，get会得到全新的
@@ -106,12 +136,15 @@ namespace HPImageViewer
         {
             if (image == null) return;
             _image = image;
-            FitImageToArea(image.Width, image.Height);
-            Rerender();
+            //FitImageToArea(image.Width, image.Height);
+            Rerender(immediate: false);
         }
 
-        private void FitImageToArea(double imageWidth, double imageHeight)
+        public void FitImageToArea()
         {
+            if (Image == null) return;
+            var imageWidth = Image.Width;
+            var imageHeight = Image.Height;
             var areaWidth = RenderSize.Width;
             var areaHeight = RenderSize.Height;
 
@@ -124,24 +157,12 @@ namespace HPImageViewer
             transformMatrix.Translate((areaWidth - imageWidth) / 2, (areaHeight - imageHeight) / 2);
             transformMatrix.ScaleAt(imageZoomingScale, imageZoomingScale, areaWidth / 2, areaHeight / 2);
             TransformMatrix = transformMatrix;
-        }
-
-
-
-        public ImageView()
-        {
-            _IBackgroundLayers = new List<IBackgroundLayer>()
-            {
-                new GridBackgroundLayer(),
-                new CrossHairLayer(),
-                new ViewingInfoLayer(),
-            };
-
-            SetDocument(new ImageViewerDesc());
-
-            //_ROIRender.Add(new RectangleRender(new RectangleDesc()));
 
         }
+
+
+
+
 
         /// <summary>When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.</summary>
         /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>

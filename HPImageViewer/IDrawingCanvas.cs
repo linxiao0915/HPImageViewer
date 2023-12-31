@@ -2,7 +2,6 @@
 using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
 using OpenCvSharp;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,7 +14,7 @@ namespace HPImageViewer
     {
         public ROIRenderCollection ROIRenders { get; }
         public ImageRender ImageRender { get; set; }
-        public void Rerender(Rect? affectedArea = null);
+        public void Rerender(Rect? affectedArea = null, bool immediate = true);
         public Cursor Cursor { get; set; }
         public double Scale { get; }
         public Matrix TransformMatrix { get; }
@@ -25,6 +24,7 @@ namespace HPImageViewer
         public ICoordTransform CoordTransform { get; }
         public Size RenderSize { get; set; }
         public Mat Image { get; set; }
+        public void FitImageToArea();
 
     }
 }

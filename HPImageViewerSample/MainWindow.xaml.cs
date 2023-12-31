@@ -21,8 +21,8 @@ namespace HPImageViewerSample
         private double _lowestFrameTime;
         private void CompositionTarget_Rendering(object? sender, EventArgs e)
         {
-            double timeNow = _stopwatch.ElapsedMilliseconds;
-            double elapsedMilliseconds = timeNow - _lastTime;
+            var timeNow = _stopwatch.ElapsedMilliseconds;
+            var elapsedMilliseconds = timeNow - _lastTime;
             _lowestFrameTime = Math.Min(_lowestFrameTime, elapsedMilliseconds);
             FpsCounter.Text = string.Format("FPS: {0:0.0} / Max: {1:0.0}", 1000.0 / elapsedMilliseconds, 1000.0 / _lowestFrameTime);
             _lastTime = timeNow;
