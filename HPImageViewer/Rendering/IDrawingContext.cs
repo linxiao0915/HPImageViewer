@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 
 namespace HPImageViewer.Rendering
@@ -9,8 +10,10 @@ namespace HPImageViewer.Rendering
         public void DrawRectangle(Brush brush, Pen pen, Rect rectangle);
         public void DrawEllipse(Brush brush, Pen pen, Point center, double radiusX, double radiusY);
         public void DrawLine(Pen pen, Point point0, Point point1);
+        public void DrawPolygon(Brush brush, Pen pen, IEnumerable<Point> points);
         public void DrawText(FormattedText formattedText, Point point);
         public void DrawImage(ImageSource imageSource, Rect rectangle);
+
 
     }
 }

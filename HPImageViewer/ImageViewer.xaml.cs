@@ -80,25 +80,34 @@ namespace HPImageViewer
         DataTrafficLimiter _dataTrafficLimiter = new(100, 512 * 512 * 5);
         public void SetImage(object image)
         {
-            //todo:此次加时间戳,并发下也有不严谨的，但是精确度不需要那么高，暂不考虑了；
+            //todo:此处加时间戳,并发下也有不严谨的，但是精确度不需要那么高，暂不考虑了；
             var value = 0;
+            ConversionItem conversionItem = null;
             if (image is Mat matImage)
             {
                 value = matImage.Width * matImage.Height;
+
+                conversionItem = new ConversionItem(image) { MatConverter = (obj) => obj as Mat };
             }
             else if (image is BitmapImage bitmapImage)
             {
                 value = (int)(bitmapImage.Width * bitmapImage.Height);
-
+                conversionItem = new ConversionItem(image) { MatConverter = obj => new WriteableBitmap(obj as BitmapImage).ToMat() };
             }
             else if (image is Bitmap bitmap)
             {
                 value = bitmap.Width * bitmap.Height;
+                conversionItem = new ConversionItem(image) { MatConverter = obj => (obj as Bitmap).ToMat() };
+            }
+            else if (image is ConversionItem conversion)
+            {
+                conversionItem = conversion;
             }
             //todo:可能存在一个bug，最后一帧得不到显示，因为可能超过流量，need improvement
             if (_dataTrafficLimiter.TryAdd(value))
             {
-                _imageConversionActionBlock.Post(new ConversionItem(_stopwatch.ElapsedTicks, image));
+                conversionItem.TimestampTick = _stopwatch.ElapsedTicks;
+                _imageConversionActionBlock.Post(conversionItem);
             }
 
 
@@ -130,18 +139,9 @@ namespace HPImageViewer
             {
                 var image = item.Image;
                 Mat mat = null;
-                if (image is Mat matImage)
+                if (item.MatConverter != null)
                 {
-                    mat = matImage;
-                }
-                else if (image is BitmapImage bitmapImage)
-                {
-                    var writeableBitmap = new WriteableBitmap(bitmapImage);
-                    mat = writeableBitmap.ToMat();
-                }
-                else if (image is Bitmap bitmap)
-                {
-                    mat = bitmap.ToMat();
+                    mat = item.MatConverter(image);
                 }
 
                 lock (_syncLock)
@@ -158,16 +158,19 @@ namespace HPImageViewer
 
         }
 
-        class ConversionItem
+        public class ConversionItem
         {
-            public long TimestampTick { get; }
-            public object Image { get; set; }
+            public long TimestampTick { get; internal set; }
+            public object Image { get; internal set; }
 
-            public ConversionItem(long timestampTick, object image)
+            public ConversionItem(object image)
             {
-                TimestampTick = timestampTick;
+
                 Image = image;
             }
+
+
+            public Func<object, Mat> MatConverter { get; internal init; }
         }
 
 

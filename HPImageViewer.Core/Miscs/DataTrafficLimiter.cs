@@ -31,10 +31,6 @@ namespace HPImageViewer.Core.Miscs
                     _currentCount = 0;
 
                 }
-                else
-                {
-
-                }
 
                 if (_currentCount >= _acceptCountInCylceTime)
                 {

@@ -43,17 +43,35 @@ namespace HPImageViewer.Rendering.ROIRenders
             if (Points?.Count > 1)
             {
                 var drawingContext = renderContext.DrawingContext;
-                for (int i = 0; i < Points.Count - 1; i++)
+                //for (int i = 0; i < Points.Count - 1; i++)
+                //{
+
+                //    drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
+
+                //}
+
+                //if (IsClosed)
+                //{
+                //    drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[Points.Count - 1]), RenderTransform.ToDevice(Points[0]));
+                //}
+                var fillBrush = IsSelected ? FillBrush : null;
+                if (fillBrush?.IsFrozen == false)
                 {
-
-                    drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
-
+                    fillBrush.Freeze();
                 }
-
                 if (IsClosed)
                 {
-                    drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[Points.Count - 1]), RenderTransform.ToDevice(Points[0]));
+                    drawingContext.DrawPolygon(fillBrush, new Pen(Brush, ROIDesc.StrokeThickness), Points.Select(s => RenderTransform.ToDevice(s)));
                 }
+                else
+                {
+                    for (int i = 0; i < Points.Count - 1; i++)
+                    {
+
+                        drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]), RenderTransform.ToDevice(Points[i + 1]));
+                    }
+                }
+
             }
 
 
