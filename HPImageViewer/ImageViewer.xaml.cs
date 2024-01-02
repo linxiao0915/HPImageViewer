@@ -158,20 +158,7 @@ namespace HPImageViewer
 
         }
 
-        public class ConversionItem
-        {
-            public long TimestampTick { get; internal set; }
-            public object Image { get; internal set; }
 
-            public ConversionItem(object image)
-            {
-
-                Image = image;
-            }
-
-
-            public Func<object, Mat> MatConverter { get; internal init; }
-        }
 
 
 
