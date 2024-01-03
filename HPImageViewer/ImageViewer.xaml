@@ -8,7 +8,7 @@
   xmlns:local="clr-namespace:HPImageViewer"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:tools="clr-namespace:HPImageViewer.Tools"
+  xmlns:core="clr-namespace:HPImageViewer.Core;assembly=HPImageViewer.Core"
   x:Name="imageViewer"
   d:DesignHeight="450"
   d:DesignWidth="800"
@@ -157,7 +157,7 @@
           <MenuItem
             x:Name="ToolBarButtonSelect"
             Style="{StaticResource MenuItemStyle}"
-            Tag="{x:Type tools:ToolPointer}"
+            Tag="{x:Static core:ToolType.ToolPointer}"
             ToolTip="Select"
             ToolTipService.ShowOnDisabled="True">
             <MenuItem.Header>
@@ -167,7 +167,7 @@
           <MenuItem
             x:Name="ToolBarButtonPan"
             Style="{StaticResource MenuItemStyle}"
-            Tag="{x:Type tools:ToolPan}"
+           Tag="{x:Static core:ToolType.ToolPan}"
             ToolTip="Select"
             ToolTipService.ShowOnDisabled="True">
             <MenuItem.Header>
@@ -195,7 +195,7 @@
           <MenuItem
             x:Name="ToolBarButtonRectangleGate"
             Style="{StaticResource MenuItemStyle}"
-            Tag="{x:Type tools:ToolRectangle}"
+             Tag="{x:Static core:ToolType.ToolRectangle}"
             ToolTip="Rectangle">
             <MenuItem.Header>
               <Path Data="M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z M 17,19 L 5,19 L 5,7 L 11,7 L 11,5 L 3,5 L 3,21 L 19,21 L 19,13 L 17,13 L 17,19 Z" Fill="Black" />
@@ -204,7 +204,7 @@
           <MenuItem
             x:Name="ToolBarButtonEllipseGate"
             Style="{StaticResource MenuItemStyle}"
-            Tag="{x:Type tools:ToolEllipse}"
+            Tag="{x:Static core:ToolType.ToolEllipse}"
             ToolTip="Ellipse">
             <MenuItem.Header>
               <Path Data="M 11,19 C 7.7,19 5,16.3 5,13 C 5,9.7 7.7,7 11,7 L 11,5 C 6.6,5 3,8.6 3,13 C 3,17.4 6.6,21 11,21 C 15.4,21 19,17.4 19,13 L 17,13 C 17,16.3 14.3,19 11,19 Z M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z" Fill="Black" />
@@ -213,7 +213,7 @@
           <MenuItem
             x:Name="Polygon"
             Style="{StaticResource MenuItemStyle}"
-            Tag="{x:Type tools:ToolPolygon}"
+             Tag="{x:Static core:ToolType.ToolPolygon}"
             ToolTip="Polygon">
             <MenuItem.Header>
               <Path Data="M 17,15.7 L 10.4,18.6 L 5.4,13.6 L 8.3,7 L 11,7 L 11,5 L 7,5 L 3,14 L 10,21 L 19,17 L 19,13 L 17,13 L 17,15.7 Z M 22,5 L 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 Z" Fill="Black" />

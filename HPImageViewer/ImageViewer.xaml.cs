@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using HPImageViewer.Tools;
 
 namespace HPImageViewer
 {
@@ -45,6 +46,7 @@ namespace HPImageViewer
             InitializeCommands();
 
             ConstructConversionTransformBlock();
+
         }
 
         private void InitializeCommands()
@@ -144,6 +146,42 @@ namespace HPImageViewer
         {
             ImageViewDrawCanvas.FitImageToArea();
             ImageViewDrawCanvas.Rerender();
+        }
+        public ToolType _activatedTool = ToolType.None;
+        public ToolType ActivatedTool
+        {
+            get => _activatedTool;
+            set
+            {
+                _activatedTool = value;
+                ActivatedToolInternal = GetToolByToolType(value);
+
+            }
+        }
+        //todo:切换时上下文的设置，对旧工具的卸载功能(还原现场)
+        internal ITool ActivatedToolInternal { get; private set; }
+
+        private ITool GetToolByToolType(ToolType toolType)
+        {
+            switch (toolType)
+            {
+                case ToolType.None:
+                    return null;
+
+                case ToolType.ToolPointer:
+                    return new ToolPointer();
+
+                case ToolType.ToolPan:
+                    return new ToolPan();
+                case ToolType.ToolRectangle:
+                    return new ToolRectangle();
+                case ToolType.ToolEllipse:
+                    return new ToolEllipse();
+                case ToolType.ToolPolygon:
+                    return new ToolRectangle();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
 

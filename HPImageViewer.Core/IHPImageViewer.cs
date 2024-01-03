@@ -9,5 +9,7 @@ namespace HPImageViewer.Core
 
         bool FitNewImageToArea { get; set; }
         void FitImageToArea();
+
+        public ToolType ActivatedTool { get; set; }
     }
 }

@@ -1,9 +1,13 @@
 ﻿using HPImageViewer.Tools;
 using Microsoft.Xaml.Behaviors;
 using System;
+using System.CodeDom;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using HPImageViewer.Core;
+using OpenCvSharp;
+using System.ComponentModel;
 
 namespace HPImageViewer.Behaviors
 {
@@ -21,12 +25,14 @@ namespace HPImageViewer.Behaviors
             AssociatedObject.MouseUp += AssociatedObject_MouseUp;
             AssociatedObject.MouseWheel += AssociatedObject_MouseWheel;
             AssociatedObject.AddHandler(MenuItem.ClickEvent, new RoutedEventHandler(MenuItem_Click));
+
         }
+
 
         private void AssociatedObject_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.OriginalSource is ImageView imageView == false) return;
-            (_activedTool as IMouseWheelTool)?.OnMouseWheel(imageView, e);
+            (ActivatedTool as IMouseWheelTool)?.OnMouseWheel(imageView, e);
 
         }
 
@@ -34,23 +40,25 @@ namespace HPImageViewer.Behaviors
         {
             if (e.OriginalSource is ImageView imageView == false) return;
             if (e.LeftButton == MouseButtonState.Released)
-                _activedTool?.OnMouseUp(imageView, e);
+                ActivatedTool?.OnMouseUp(imageView, e);
         }
 
         private void AssociatedObject_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (e.OriginalSource is ImageView imageView == false) return;
-            _activedTool?.OnMouseMove(imageView, e);
+            ActivatedTool?.OnMouseMove(imageView, e);
         }
 
         private void AssociatedObject_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.OriginalSource is ImageView imageView == false) return;
             if (e.LeftButton == MouseButtonState.Pressed)
-                _activedTool?.OnMouseDown(imageView, e);
+                ActivatedTool?.OnMouseDown(imageView, e);
         }
 
-        private ITool _activedTool;
+        private ITool ActivatedTool => AssociatedObject.ActivatedToolInternal;
+
+
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -62,16 +70,16 @@ namespace HPImageViewer.Behaviors
                     ((MenuItem)item).IsChecked = false;
                 }
                 menuItem.IsChecked = true;
-                if (menuItem.Tag is Type t && t.IsAssignableTo(typeof(ITool)))
+
+                if (menuItem.Tag is ToolType toolType)
                 {
-                    if (t != _activedTool?.GetType())
-                    {
-                        _activedTool = (ITool)Activator.CreateInstance(t);
-                    }
+                    AssociatedObject.ActivatedTool = toolType;
+
                 }
                 else
                 {
-                    _activedTool = null;
+                    AssociatedObject.ActivatedTool = ToolType.None;
+
                 }
             }
         }
@@ -86,6 +94,7 @@ namespace HPImageViewer.Behaviors
             AssociatedObject.MouseMove -= AssociatedObject_MouseMove;
             AssociatedObject.MouseUp -= AssociatedObject_MouseUp;
             AssociatedObject.MouseWheel -= AssociatedObject_MouseWheel;
+
             base.OnDetaching();
         }
 
