@@ -252,6 +252,15 @@
             x:Name="SelectAll"
             Command="{Binding SelectAllCommand}"
             Header="SelectAll" />
+          <Separator/>
+          <MenuItem
+           x:Name="MoveToFront"
+           Command="{Binding MoveToFrontCommand}"
+           Header="Move to Front" />
+          <MenuItem
+           x:Name="MoveToBack"
+           Command="{Binding MoveToBackCommand}"
+           Header="Move to Back" />
         </ContextMenu>
       </local:ImageView.ContextMenu>
     </local:ImageView>

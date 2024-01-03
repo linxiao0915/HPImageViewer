@@ -148,5 +148,10 @@ namespace HPImageViewer.Rendering.ROIRenders
             get => ROIRenders[index];
             set => ROIRenders[index] = value;
         }
+
+        public List<ROIRender> GetSelectedROIs()
+        {
+            return ROIRenders.Where(n => n.IsSelected).ToList();
+        }
     }
 }

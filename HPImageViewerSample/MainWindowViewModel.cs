@@ -32,8 +32,9 @@ namespace HPImageViewerSample
                     BitmapImage bitmap = new BitmapImage(new Uri(selectedFileName, UriKind.Relative));
                     bitmap.Freeze();
                     //var image = Cv2.ImRead(selectedFileName);
+                    _imageViewer.FitNewImageToArea = true;
                     _imageViewer.SetImage(bitmap);
-                    _imageViewer.FitImageToArea();
+
                 }
                 catch (Exception ex)
                 {

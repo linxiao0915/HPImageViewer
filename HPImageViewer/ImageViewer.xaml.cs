@@ -41,15 +41,19 @@ namespace HPImageViewer
         }
         void Initialize()
         {
-            ResetViewCommand = new ImageViewerCommand(() =>
-            {
-                ImageViewDrawCanvas.ResetView();
 
-            });
+            InitializeCommands();
+
+            ConstructConversionTransformBlock();
+        }
+
+        private void InitializeCommands()
+        {
+            ResetViewCommand = new ImageViewerCommand(FitImageToArea);
 
             DeleteCommand = new ImageViewerCommand(() =>
             {
-                var selectedROIs = ImageViewDrawCanvas.ROIRenders.Where(n => n.IsSelected).ToList();
+                var selectedROIs = ImageViewDrawCanvas.ROIRenders.GetSelectedROIs();
                 if (selectedROIs.Any())
                 {
                     foreach (var selectedROI in selectedROIs)
@@ -68,7 +72,25 @@ namespace HPImageViewer
                 }
                 ImageViewDrawCanvas.Rerender();
             });
-            ConstructConversionTransformBlock();
+
+            MoveToFrontCommand = new ImageViewerCommand(() =>
+            {
+                var selectedROIs = ImageViewDrawCanvas.ROIRenders.GetSelectedROIs();
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Remove(n));
+                selectedROIs.Reverse();
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Insert(0, n));
+
+                ImageViewDrawCanvas.Rerender();
+
+            }, () => ImageViewDrawCanvas.ROIRenders.GetSelectedROIs().Count > 0);
+
+            MoveToBackCommand = new ImageViewerCommand(() =>
+            {
+                var selectedROIs = ImageViewDrawCanvas.ROIRenders.GetSelectedROIs();
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Remove(n));
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Add(n));
+                ImageViewDrawCanvas.Rerender();
+            }, () => ImageViewDrawCanvas.ROIRenders.GetSelectedROIs().Count > 0);
         }
 
 
@@ -112,17 +134,24 @@ namespace HPImageViewer
 
 
         }
+        public bool FitNewImageToArea
+        {
+            get => ImageViewDrawCanvas.FitNewImageToArea;
+            set => ImageViewDrawCanvas.FitNewImageToArea = value;
+        }
 
         public void FitImageToArea()
         {
             ImageViewDrawCanvas.FitImageToArea();
+            ImageViewDrawCanvas.Rerender();
         }
 
 
         public ICommand ResetViewCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public ICommand SelectAllCommand { get; private set; }
-
+        public ICommand MoveToFrontCommand { get; private set; }
+        public ICommand MoveToBackCommand { get; private set; }
 
         private ActionBlock<ConversionItem> _imageConversionActionBlock;
 

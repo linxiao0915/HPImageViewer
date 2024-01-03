@@ -20,10 +20,10 @@ namespace HPImageViewer
         public Matrix TransformMatrix { get; }
         public void ScaleAt(double scaleX, double scaleY, double centerX, double centerY);
         public void PanTo(double deltaX, double deltaY);
-        public void ResetView();
         public ICoordTransform CoordTransform { get; }
         public Size RenderSize { get; set; }
         public Mat Image { get; set; }
+        public bool FitNewImageToArea { get; set; }
         public void FitImageToArea();
 
     }

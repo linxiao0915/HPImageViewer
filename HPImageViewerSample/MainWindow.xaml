@@ -39,7 +39,7 @@
       x:Name="ImageControl"
       Grid.Row="2"
       Width="800"
-      Height="500"
+  
       Margin="32"
       HorizontalAlignment="Left"
       VerticalAlignment="Top" />

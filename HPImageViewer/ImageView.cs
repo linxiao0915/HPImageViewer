@@ -57,6 +57,7 @@ namespace HPImageViewer
         }
 
 
+
         public void Rerender(Rect? affectedArea = null, bool immediate = true)
         {
 
@@ -64,8 +65,14 @@ namespace HPImageViewer
             {
                 if (immediate)
                 {
-                    InvalidateVisual();
-
+                    if (CheckAccess())
+                    {
+                         InvalidateVisual();
+                    }
+                    else
+                    {
+                        Dispatcher.BeginInvoke(InvalidateVisual);
+                    }
                 }
 
 #if DEBUG
@@ -108,12 +115,6 @@ namespace HPImageViewer
             TransformMatrix = matrix;
         }
 
-        public void ResetView()
-        {
-            TransformMatrix = Matrix.Identity;
-            this.Rerender(null);
-        }
-
         private RenderTransform _RenderTransform;
         public ICoordTransform CoordTransform
         {
@@ -136,10 +137,15 @@ namespace HPImageViewer
         {
             if (image == null) return;
             _image = image;
-            //FitImageToArea(image.Width, image.Height);
+            if (FitNewImageToArea)
+            {
+                FitImageToArea();
+            }
+
             Rerender(immediate: false);
         }
 
+        public bool FitNewImageToArea { get; set; } = false;
         public void FitImageToArea()
         {
             if (Image == null) return;
@@ -157,7 +163,6 @@ namespace HPImageViewer
             transformMatrix.Translate((areaWidth - imageWidth) / 2, (areaHeight - imageHeight) / 2);
             transformMatrix.ScaleAt(imageZoomingScale, imageZoomingScale, areaWidth / 2, areaHeight / 2);
             TransformMatrix = transformMatrix;
-
         }
 
 
