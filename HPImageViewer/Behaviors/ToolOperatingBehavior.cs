@@ -24,8 +24,6 @@ namespace HPImageViewer.Behaviors
             AssociatedObject.MouseMove += AssociatedObject_MouseMove;
             AssociatedObject.MouseUp += AssociatedObject_MouseUp;
             AssociatedObject.MouseWheel += AssociatedObject_MouseWheel;
-            AssociatedObject.AddHandler(MenuItem.ClickEvent, new RoutedEventHandler(MenuItem_Click));
-
         }
 
 
@@ -60,29 +58,7 @@ namespace HPImageViewer.Behaviors
 
 
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (e.OriginalSource is MenuItem menuItem)
-            {
-
-                foreach (var item in ((Menu)menuItem.Parent).Items)
-                {
-                    ((MenuItem)item).IsChecked = false;
-                }
-                menuItem.IsChecked = true;
-
-                if (menuItem.Tag is ToolType toolType)
-                {
-                    AssociatedObject.ActivatedTool = toolType;
-
-                }
-                else
-                {
-                    AssociatedObject.ActivatedTool = ToolType.None;
-
-                }
-            }
-        }
+    
 
         /// <summary>
         /// Called when the behavior is being detached from its AssociatedObject, but before it has actually occurred.

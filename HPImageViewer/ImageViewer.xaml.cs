@@ -153,8 +153,11 @@ namespace HPImageViewer
             get => _activatedTool;
             set
             {
-                _activatedTool = value;
-                ActivatedToolInternal = GetToolByToolType(value);
+                if (_activatedTool != value)
+                {
+                    _activatedTool = value;
+                    ActivatedToolInternal = GetToolByToolType(value);
+                }
 
             }
         }
@@ -170,7 +173,6 @@ namespace HPImageViewer
 
                 case ToolType.ToolPointer:
                     return new ToolPointer();
-
                 case ToolType.ToolPan:
                     return new ToolPan();
                 case ToolType.ToolRectangle:
@@ -178,7 +180,7 @@ namespace HPImageViewer
                 case ToolType.ToolEllipse:
                     return new ToolEllipse();
                 case ToolType.ToolPolygon:
-                    return new ToolRectangle();
+                    return new ToolPolygon();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
