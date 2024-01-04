@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewer.Rendering.Layers
 {

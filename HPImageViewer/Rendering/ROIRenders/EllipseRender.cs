@@ -131,7 +131,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             var center = new Point(CenterX, CenterY);
             var transformedCenter = RenderTransform.ToDevice(center);
 
-            renderContext.DrawingContext.DrawEllipse(fillBrush, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
+            renderContext.DrawingContext.DrawEllipse(fillBrush, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter.ToPoint(), R * renderContext.Scale, R * renderContext.Scale);
         }
 
         protected override void MoveHandleToInteranl(int handleNumber, Point point)

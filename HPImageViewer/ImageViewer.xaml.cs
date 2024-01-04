@@ -42,7 +42,7 @@ namespace HPImageViewer
         }
         void Initialize()
         {
-
+            ActivatedTool = ToolType.ToolPan;
             InitializeCommands();
 
             ConstructConversionTransformBlock();
@@ -147,7 +147,7 @@ namespace HPImageViewer
             ImageViewDrawCanvas.FitImageToArea();
             ImageViewDrawCanvas.Rerender();
         }
-        public ToolType _activatedTool = ToolType.None;
+        private ToolType _activatedTool;
         public ToolType ActivatedTool
         {
             get => _activatedTool;

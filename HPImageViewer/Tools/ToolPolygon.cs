@@ -1,6 +1,7 @@
 ﻿using HPImageViewer.Rendering.ROIRenders;
 using System.Windows;
 using System.Windows.Input;
+using HPImageViewer.Utils;
 
 namespace HPImageViewer.Tools
 {
@@ -37,7 +38,7 @@ namespace HPImageViewer.Tools
                 {
                     polygonRender.Points.RemoveAt(polygonRender.Points.Count - 1);
                 }
-                polygonRender.Points.Add(transformedStartPoint);
+                polygonRender.Points.Add(transformedStartPoint.ToPoint());
                 _floatPoint = transformedStartPoint;
                 drawingCanvas.Rerender();
             }
@@ -65,13 +66,13 @@ namespace HPImageViewer.Tools
 
                 if (_polygonRender == null)
                 {
-                    _polygonRender = new PolygonRender(){IsClosed=false};
+                    _polygonRender = new PolygonRender() { IsClosed = false };
                     AddNewObject(drawingCanvas, _polygonRender);
                 }
 
 
 
-                _polygonRender.Points.Add(transformedStartPoint);
+                _polygonRender.Points.Add(transformedStartPoint.ToPoint());
                 _isAdding = true;
                 drawingCanvas.Rerender();
                 return;

@@ -1,5 +1,6 @@
-﻿using System.Windows;
+﻿
 using System.Windows.Media;
+using HPImageViewer.Core.Primitives;
 
 namespace HPImageViewer.Rendering.Layers
 {

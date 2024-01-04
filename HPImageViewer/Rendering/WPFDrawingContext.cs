@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using HPImageViewer.Utils;
+using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewer.Rendering
 {
@@ -20,13 +22,12 @@ namespace HPImageViewer.Rendering
 
         public void DrawEllipse(Brush brush, Pen pen, Point center, double radiusX, double radiusY)
         {
-            _drawingContext.DrawEllipse(brush, pen, center, radiusX, radiusY);
+            _drawingContext.DrawEllipse(brush, pen, center.ToWindowPoint(), radiusX, radiusY);
 
         }
         public void DrawLine(Pen pen, Point point0, Point point1)
         {
-            _drawingContext.DrawLine(pen, point0, point1);
-            //_drawingContext.DrawGeometry();
+            _drawingContext.DrawLine(pen, point0.ToWindowPoint(), point1.ToWindowPoint());
         }
 
         public void DrawPolygon(Brush brush, Pen pen, IEnumerable<Point> points)
@@ -39,16 +40,16 @@ namespace HPImageViewer.Rendering
             using (var context = streamGeometry.Open())
             {
                 var firstPoint = pointList.First();
-                context.BeginFigure(firstPoint, true, true);
+                context.BeginFigure(firstPoint.ToWindowPoint(), true, true);
                 pointList.RemoveAt(0);
-                pointList.ForEach(n => context.LineTo(n, true, false));
+                pointList.ForEach(n => context.LineTo(n.ToWindowPoint(), true, false));
             }
             _drawingContext.DrawGeometry(brush, pen, streamGeometry);
         }
 
         public void DrawText(FormattedText formattedText, Point point)
         {
-            _drawingContext.DrawText(formattedText, point);
+            _drawingContext.DrawText(formattedText, point.ToWindowPoint());
 
         }
         public void DrawImage(ImageSource imageSource, Rect rectangle)
