@@ -12,7 +12,7 @@
   Title="MainWindow"
   Width="800"
   Height="450"
-  mc:Ignorable="d" MenuItem.Click="MenuItem_Click" >
+  mc:Ignorable="d">
   <Window.Resources>
     <converters:BrushRoundConverter x:Key="BrushRoundConverter" />
     <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
@@ -122,6 +122,11 @@
         Header="打开图片" />
       <MenuItem FontSize="22" Header="打开文档" Command="{Binding ExecuteOpenDocumentCommand}" />
       <MenuItem FontSize="22" Header="保存文档" Command="{Binding ExecuteSaveDocumentCommand}" />
+      <MenuItem FontSize="22" Header="添加ROI">
+        <MenuItem FontSize="22" Header="添加矩形"  Command="{Binding ExecuteAddRoiCommand}" CommandParameter="{x:Static local:ROIType.ToolRectangle}"/>
+        <MenuItem FontSize="22" Command="{Binding ExecuteAddRoiCommand}" Header="添加圆形" CommandParameter="{x:Static local:ROIType.ToolEllipse}"/>
+        <MenuItem FontSize="22" Command="{Binding ExecuteAddRoiCommand}" Header="添加多边形" CommandParameter="{x:Static local:ROIType.ToolPolygon}"/>
+      </MenuItem>
     </Menu>
     <Border
       Grid.Row="1"
@@ -162,7 +167,7 @@
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonSelect"
+      x:Name="ToolBarButtonSelect" Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolPointer}"
       Style="{StaticResource MenuItemStyle}"
       Tag="{x:Static core:ToolType.ToolPointer}"
       ToolTip="Select"
@@ -171,7 +176,7 @@
             <materialDesign:PackIcon Kind="CursorDefaultOutline" />
           </MenuItem.Header>
         </MenuItem>
-        <MenuItem
+        <MenuItem  Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolPan}"
       x:Name="ToolBarButtonPan"
       Style="{StaticResource MenuItemStyle}"
      Tag="{x:Static core:ToolType.ToolPan}"
@@ -199,8 +204,8 @@
             <materialDesign:PackIcon Kind="MagnifyMinus" />
           </MenuItem.Header>
         </MenuItem>
-        <MenuItem
-      x:Name="ToolBarButtonRectangleGate"
+        <MenuItem  Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolRectangle}"
+      x:Name="ToolBarButtonRectangle"
       Style="{StaticResource MenuItemStyle}"
        Tag="{x:Static core:ToolType.ToolRectangle}"
       ToolTip="Rectangle">
@@ -209,7 +214,7 @@
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonEllipseGate"
+      x:Name="ToolBarButtonEllipse"  Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolEllipse}"
       Style="{StaticResource MenuItemStyle}"
       Tag="{x:Static core:ToolType.ToolEllipse}"
       ToolTip="Ellipse">
@@ -219,6 +224,7 @@
         </MenuItem>
         <MenuItem
       x:Name="Polygon"
+       Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolPolygon}"
       Style="{StaticResource MenuItemStyle}"
        Tag="{x:Static core:ToolType.ToolPolygon}"
       ToolTip="Polygon">

@@ -1,13 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HPImageViewer;
 using HPImageViewer.Core;
 using HPImageViewer.Core.Persistence;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewerSample
 {
@@ -101,5 +104,52 @@ namespace HPImageViewerSample
 
         }
 
+
+
+        [RelayCommand]
+        private void ExecuteChangeToolType(ToolType toolType)
+        {
+            _imageViewer.ActivatedTool = toolType;
+        }
+
+        [RelayCommand]
+        private void ExecuteAddRoi(ROIType roiType)
+        {
+            ROIDesc roi = null;
+            switch (roiType)
+            {
+                case ROIType.ToolRectangle:
+                    roi = new RectangleDesc() { Left = 0, Top = 0, Width = 200, Height = 200 };
+                    break;
+                case ROIType.ToolEllipse:
+                    roi = new EllipseDesc() { CenterX = 0, CenterY = 0, R = 100 };
+                    break;
+                case ROIType.ToolPolygon:
+                    roi = new PolygonDesc()
+                    {
+                        Vertices = new List<Point>()
+                        {
+                            new Point(0,0),
+                            new Point(100,50),
+                            new Point(50,100),
+                        }
+                    };
+                    break;
+            }
+
+            if (roi != null)
+            {
+                _imageViewer.AddROIs(roi);
+            }
+
+        }
+
+    }
+
+    public enum ROIType
+    {
+        ToolRectangle,
+        ToolEllipse,
+        ToolPolygon,
     }
 }

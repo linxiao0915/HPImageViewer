@@ -7,6 +7,7 @@ using HPImageViewer.Utils;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -67,7 +68,7 @@ namespace HPImageViewer
                 {
                     if (CheckAccess())
                     {
-                         InvalidateVisual();
+                        InvalidateVisual();
                     }
                     else
                     {
@@ -200,7 +201,15 @@ namespace HPImageViewer
             Rerender();
         }
 
+        public void AddROIs(params ROIDesc[] rois)
+        {
+            foreach (var roiDesc in ROIRenderCollection.CreateByROIDescs(rois.ToList(), CoordTransform))
+            {
+                ROIRenders.Add(roiDesc);
+            }
+            Rerender();
 
+        }
 
         private RenderContext GetRenderContext(DrawingContext drawingContext)
         {
