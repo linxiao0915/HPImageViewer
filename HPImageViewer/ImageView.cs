@@ -61,6 +61,7 @@ namespace HPImageViewer
 
         public void Rerender(Rect? affectedArea = null, bool immediate = true)
         {
+            if (RenderSize.Height <= 0 || RenderSize.Width <= 0) return;
 
             if (affectedArea.HasValue == false)
             {

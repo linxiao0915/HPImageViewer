@@ -4,11 +4,11 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
   xmlns:behaviors="clr-namespace:HPImageViewer.Behaviors"
+  xmlns:core="clr-namespace:HPImageViewer.Core;assembly=HPImageViewer.Core"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:HPImageViewer"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:core="clr-namespace:HPImageViewer.Core;assembly=HPImageViewer.Core"
   x:Name="imageViewer"
   d:DesignHeight="450"
   d:DesignWidth="800"
@@ -39,7 +39,8 @@
           VerticalAlignment="Center"
           FontFamily="Verdana"
           FontSize="16"
-          Text="Fps" Foreground="Yellow"/>
+          Foreground="Yellow"
+          Text="Fps" />
 
       </Grid>
 
@@ -64,15 +65,15 @@
             x:Name="SelectAll"
             Command="{Binding SelectAllCommand}"
             Header="SelectAll" />
-          <Separator/>
+          <Separator />
           <MenuItem
-           x:Name="MoveToFront"
-           Command="{Binding MoveToFrontCommand}"
-           Header="Move to Front" />
+            x:Name="MoveToFront"
+            Command="{Binding MoveToFrontCommand}"
+            Header="Move to Front" />
           <MenuItem
-           x:Name="MoveToBack"
-           Command="{Binding MoveToBackCommand}"
-           Header="Move to Back" />
+            x:Name="MoveToBack"
+            Command="{Binding MoveToBackCommand}"
+            Header="Move to Back" />
         </ContextMenu>
       </local:ImageView.ContextMenu>
     </local:ImageView>

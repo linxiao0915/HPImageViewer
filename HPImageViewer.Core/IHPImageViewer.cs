@@ -1,6 +1,4 @@
-﻿
-using System.Security.Permissions;
-using HPImageViewer.Core.Persistence;
+﻿using HPImageViewer.Core.Persistence;
 
 namespace HPImageViewer.Core
 {

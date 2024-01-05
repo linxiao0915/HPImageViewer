@@ -1,6 +1,7 @@
 ﻿using HPImageViewer.Core;
 using HPImageViewer.Core.Miscs;
 using HPImageViewer.Core.Persistence;
+using HPImageViewer.Tools;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
@@ -13,7 +14,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using HPImageViewer.Tools;
 
 namespace HPImageViewer
 {
@@ -130,7 +130,11 @@ namespace HPImageViewer
             //todo:可能存在一个bug，最后一帧得不到显示，因为可能超过流量，need improvement
             if (_dataTrafficLimiter.TryAdd(value))
             {
-                conversionItem.TimestampTick = _stopwatch.ElapsedTicks;
+                if (conversionItem != null)
+                {
+                    conversionItem.TimestampTick = _stopwatch.ElapsedTicks;
+                }
+
                 _imageConversionActionBlock.Post(conversionItem);
             }
 
@@ -212,18 +216,20 @@ namespace HPImageViewer
 
             _imageConversionActionBlock = new ActionBlock<ConversionItem>(item =>
             {
-                var image = item.Image;
+
                 Mat mat = null;
-                if (item.MatConverter != null)
+                if (item?.MatConverter != null)
                 {
+                    var image = item.Image;
                     mat = item.MatConverter(image);
                 }
 
                 lock (_syncLock)
                 {
-                    if (item.TimestampTick <= _currentOutputTimestampTick)
-                        return;
-                    _currentOutputTimestampTick = item.TimestampTick;
+                    if (item?.TimestampTick > _currentOutputTimestampTick)
+                    {
+                        _currentOutputTimestampTick = item.TimestampTick;
+                    }
                 }
 
                 ImageViewDrawCanvas.Image = mat;
