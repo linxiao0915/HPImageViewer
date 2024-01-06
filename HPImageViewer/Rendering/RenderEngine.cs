@@ -6,7 +6,7 @@ namespace HPImageViewer.Rendering
 {
     internal class RenderEngine
     {
-        private ActionBlock<RenderDataItem> _renderDataSessionTransformBlock;
+        private readonly ActionBlock<RenderDataItem> _renderDataSessionTransformBlock;
 
         private long _currentRenderSessionTimestampTick = 0;
         public event EventHandler<ImageRender> RenderRequested;

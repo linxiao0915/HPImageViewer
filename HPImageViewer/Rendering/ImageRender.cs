@@ -67,16 +67,16 @@ namespace HPImageViewer.Rendering
                 top = 0;
             }
 
-            var right = (int)Math.Ceiling(renderImagePixelArea.Right) - 1;
+            var right = (int)Math.Ceiling(renderImagePixelArea.Right);
             if (right >= imageWidth)
             {
-                right = imageWidth - 1;
+                right = imageWidth;
             }
 
-            var bottom = (int)Math.Ceiling(renderImagePixelArea.Bottom) - 1;
+            var bottom = (int)Math.Ceiling(renderImagePixelArea.Bottom);
             if (bottom >= imageHeight)
             {
-                bottom = imageHeight - 1;
+                bottom = imageHeight;
             }
 
             return new OpenCvSharp.Rect(left, top, right - left, bottom - top);
