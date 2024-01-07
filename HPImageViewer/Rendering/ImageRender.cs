@@ -92,6 +92,11 @@ namespace HPImageViewer.Rendering
             //  var deviceDrawingArea = new Rect(0, 0, renderContext.RenderSize.Width , renderContext.RenderSize.Height);
             var deviceDrawingArea = new Rect(-renderContext.RenderSize.Width / 2, -renderContext.RenderSize.Height / 2, renderContext.RenderSize.Width * 2, renderContext.RenderSize.Height * 2);//2倍区域绘制,拖拽时的缓存效果
             deviceDrawingArea.Intersect(ImageDeviceRect);
+            if (deviceDrawingArea.IsEmpty)
+            {//数值范围溢出
+                return;
+            }
+
             //绘制到设备的区域
             var renderDeviceArea = deviceDrawingArea;
             //绘制的Image像素区域
