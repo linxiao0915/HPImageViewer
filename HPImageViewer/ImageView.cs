@@ -102,7 +102,7 @@ namespace HPImageViewer
         }
 
         public double Scale => TransformMatrix.M11;
-        public Matrix TransformMatrix { get; private set; } = Matrix.Identity;// matrix是值类型，get会得到全新的
+        public Matrix TransformMatrix { get; internal set; } = Matrix.Identity;// matrix是值类型，get会得到全新的
         public void ScaleAt(double scaleX, double scaleY, double centerX, double centerY)
         {
             var matrix = TransformMatrix;

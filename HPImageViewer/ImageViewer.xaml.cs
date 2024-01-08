@@ -51,7 +51,18 @@ namespace HPImageViewer
 
         private void InitializeCommands()
         {
-            ResetViewCommand = new ImageViewerCommand(FitImageToArea);
+            ResetViewCommand = new ImageViewerCommand(() =>
+            {
+                if (ImageViewDrawCanvas.Image == null)
+                {
+                    ImageViewDrawCanvas.TransformMatrix = Matrix.Identity;
+                }
+                else
+                {
+                    FitImageToArea();
+                }
+
+            });
 
             DeleteCommand = new ImageViewerCommand(() =>
             {
