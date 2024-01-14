@@ -2,13 +2,13 @@
   x:Class="HPImageViewerSample.MainWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:converters="clr-namespace:HPImageViewer.Converters;assembly=HPImageViewer"
+  xmlns:core="clr-namespace:HPImageViewer.Core;assembly=HPImageViewer.Core"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:hpImageViewer="clr-namespace:HPImageViewer;assembly=HPImageViewer"
   xmlns:local="clr-namespace:HPImageViewerSample"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:core="clr-namespace:HPImageViewer.Core;assembly=HPImageViewer.Core"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-  xmlns:converters="clr-namespace:HPImageViewer.Converters;assembly=HPImageViewer"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="MainWindow"
   Width="800"
   Height="450"
@@ -120,12 +120,30 @@
         Command="{Binding ExecuteOpenImageCommand}"
         FontSize="22"
         Header="打开图片" />
-      <MenuItem FontSize="22" Header="打开文档" Command="{Binding ExecuteOpenDocumentCommand}" />
-      <MenuItem FontSize="22" Header="保存文档" Command="{Binding ExecuteSaveDocumentCommand}" />
+      <MenuItem
+        Command="{Binding ExecuteOpenDocumentCommand}"
+        FontSize="22"
+        Header="打开文档" />
+      <MenuItem
+        Command="{Binding ExecuteSaveDocumentCommand}"
+        FontSize="22"
+        Header="保存文档" />
       <MenuItem FontSize="22" Header="添加ROI">
-        <MenuItem FontSize="22" Header="添加矩形"  Command="{Binding ExecuteAddRoiCommand}" CommandParameter="{x:Static local:ROIType.ToolRectangle}"/>
-        <MenuItem FontSize="22" Command="{Binding ExecuteAddRoiCommand}" Header="添加圆形" CommandParameter="{x:Static local:ROIType.ToolEllipse}"/>
-        <MenuItem FontSize="22" Command="{Binding ExecuteAddRoiCommand}" Header="添加多边形" CommandParameter="{x:Static local:ROIType.ToolPolygon}"/>
+        <MenuItem
+          Command="{Binding ExecuteAddRoiCommand}"
+          CommandParameter="{x:Static local:ROIType.ToolRectangle}"
+          FontSize="22"
+          Header="添加矩形" />
+        <MenuItem
+          Command="{Binding ExecuteAddRoiCommand}"
+          CommandParameter="{x:Static local:ROIType.ToolEllipse}"
+          FontSize="22"
+          Header="添加圆形" />
+        <MenuItem
+          Command="{Binding ExecuteAddRoiCommand}"
+          CommandParameter="{x:Static local:ROIType.ToolPolygon}"
+          FontSize="22"
+          Header="添加多边形" />
       </MenuItem>
     </Menu>
     <Border
@@ -146,88 +164,97 @@
           </Style>
         </Menu.Resources>
         <MenuItem
-      x:Name="ToolBarButtonUndo"
-      Margin="32,0,0,0"
-      Style="{StaticResource MenuItemStyle}"
-      ToolTip="Undo"
-      ToolTipService.ShowOnDisabled="True"
-      Visibility="Collapsed">
+          x:Name="ToolBarButtonUndo"
+          Margin="32,0,0,0"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="Undo"
+          ToolTipService.ShowOnDisabled="True"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="Undo" />
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonRedo"
-      Style="{DynamicResource MenuItemStyle}"
-      ToolTip="Redo"
-      ToolTipService.ShowOnDisabled="True"
-      Visibility="Collapsed">
+          x:Name="ToolBarButtonRedo"
+          Style="{DynamicResource MenuItemStyle}"
+          ToolTip="Redo"
+          ToolTipService.ShowOnDisabled="True"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="Redo" />
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonSelect" Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolPointer}"
-      Style="{StaticResource MenuItemStyle}"
-      Tag="{x:Static core:ToolType.ToolPointer}"
-      ToolTip="Select"
-      ToolTipService.ShowOnDisabled="True">
+          x:Name="ToolBarButtonSelect"
+          Command="{Binding ExecuteChangeToolTypeCommand}"
+          CommandParameter="{x:Static core:ToolType.ToolPointer}"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Static core:ToolType.ToolPointer}"
+          ToolTip="Select"
+          ToolTipService.ShowOnDisabled="True">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="CursorDefaultOutline" />
           </MenuItem.Header>
         </MenuItem>
-        <MenuItem  Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolPan}"
-      x:Name="ToolBarButtonPan"
-      Style="{StaticResource MenuItemStyle}"
-     Tag="{x:Static core:ToolType.ToolPan}"
-      ToolTip="Select"
-      ToolTipService.ShowOnDisabled="True">
+        <MenuItem
+          x:Name="ToolBarButtonPan"
+          Command="{Binding ExecuteChangeToolTypeCommand}"
+          CommandParameter="{x:Static core:ToolType.ToolPan}"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Static core:ToolType.ToolPan}"
+          ToolTip="Select"
+          ToolTipService.ShowOnDisabled="True">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="Pan" />
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonCancelZoomIn"
-      Style="{StaticResource MenuItemStyle}"
-      ToolTip="ZoomIn"
-      Visibility="Collapsed">
+          x:Name="ToolBarButtonCancelZoomIn"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="ZoomIn"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="MagnifyPlus" />
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonCancelZoomOut"
-      Style="{StaticResource MenuItemStyle}"
-      ToolTip="ZoomOut"
-      Visibility="Collapsed">
+          x:Name="ToolBarButtonCancelZoomOut"
+          Style="{StaticResource MenuItemStyle}"
+          ToolTip="ZoomOut"
+          Visibility="Collapsed">
           <MenuItem.Header>
             <materialDesign:PackIcon Kind="MagnifyMinus" />
           </MenuItem.Header>
         </MenuItem>
-        <MenuItem  Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolRectangle}"
-      x:Name="ToolBarButtonRectangle"
-      Style="{StaticResource MenuItemStyle}"
-       Tag="{x:Static core:ToolType.ToolRectangle}"
-      ToolTip="Rectangle">
+        <MenuItem
+          x:Name="ToolBarButtonRectangle"
+          Command="{Binding ExecuteChangeToolTypeCommand}"
+          CommandParameter="{x:Static core:ToolType.ToolRectangle}"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Static core:ToolType.ToolRectangle}"
+          ToolTip="Rectangle">
           <MenuItem.Header>
             <Path Data="M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z M 17,19 L 5,19 L 5,7 L 11,7 L 11,5 L 3,5 L 3,21 L 19,21 L 19,13 L 17,13 L 17,19 Z" Fill="Black" />
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="ToolBarButtonEllipse"  Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolEllipse}"
-      Style="{StaticResource MenuItemStyle}"
-      Tag="{x:Static core:ToolType.ToolEllipse}"
-      ToolTip="Ellipse">
+          x:Name="ToolBarButtonEllipse"
+          Command="{Binding ExecuteChangeToolTypeCommand}"
+          CommandParameter="{x:Static core:ToolType.ToolEllipse}"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Static core:ToolType.ToolEllipse}"
+          ToolTip="Ellipse">
           <MenuItem.Header>
             <Path Data="M 11,19 C 7.7,19 5,16.3 5,13 C 5,9.7 7.7,7 11,7 L 11,5 C 6.6,5 3,8.6 3,13 C 3,17.4 6.6,21 11,21 C 15.4,21 19,17.4 19,13 L 17,13 C 17,16.3 14.3,19 11,19 Z M 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 L 19,5 Z" Fill="Black" />
           </MenuItem.Header>
         </MenuItem>
         <MenuItem
-      x:Name="Polygon"
-       Command="{Binding ExecuteChangeToolTypeCommand}" CommandParameter="{x:Static core:ToolType.ToolPolygon}"
-      Style="{StaticResource MenuItemStyle}"
-       Tag="{x:Static core:ToolType.ToolPolygon}"
-      ToolTip="Polygon">
+          x:Name="Polygon"
+          Command="{Binding ExecuteChangeToolTypeCommand}"
+          CommandParameter="{x:Static core:ToolType.ToolPolygon}"
+          Style="{StaticResource MenuItemStyle}"
+          Tag="{x:Static core:ToolType.ToolPolygon}"
+          ToolTip="Polygon">
           <MenuItem.Header>
             <Path Data="M 17,15.7 L 10.4,18.6 L 5.4,13.6 L 8.3,7 L 11,7 L 11,5 L 7,5 L 3,14 L 10,21 L 19,17 L 19,13 L 17,13 L 17,15.7 Z M 22,5 L 19,5 L 19,2 L 17,2 L 17,5 L 14,5 L 14,7 L 17,7 L 17,10 L 19,10 L 19,7 L 22,7 L 22,5 Z" Fill="Black" />
           </MenuItem.Header>
@@ -237,11 +264,10 @@
     <hpImageViewer:ImageViewer
       x:Name="ImageControl"
       Grid.Row="2"
-      Width="800"
-  
+      Width="600"
+      Height="600"
       Margin="32"
       HorizontalAlignment="Left"
       VerticalAlignment="Top" />
-
   </Grid>
 </Window>

@@ -25,14 +25,11 @@
   </b:Interaction.Behaviors>
 
   <Grid>
-
     <Border
       x:Name="ToolBar"
       VerticalAlignment="top"
       Panel.ZIndex="1">
       <Grid>
-
-
         <TextBlock
           Name="FpsCounter"
           HorizontalAlignment="Right"
@@ -41,14 +38,11 @@
           FontSize="16"
           Foreground="Yellow"
           Text="Fps" />
-
       </Grid>
-
     </Border>
     <local:ImageView
       x:Name="ImageViewDrawCanvas"
-      Grid.Row="1"
-      Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+      Background="{Binding Background, ElementName=imageViewer}"
       ClipToBounds="True"
       Tag="{Binding ElementName=imageViewer}">
       <local:ImageView.ContextMenu>

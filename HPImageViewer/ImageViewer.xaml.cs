@@ -22,11 +22,14 @@ namespace HPImageViewer
     /// </summary>
     public partial class ImageViewer : UserControl, IHPImageViewer
     {
+
+
         public ImageViewer()
         {
             Initialize();
             InitializeComponent();
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
+            SetCurrentValue(BackgroundProperty, new SolidColorBrush(Colors.Black));
 
         }
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();

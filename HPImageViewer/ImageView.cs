@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Rect = System.Windows.Rect;
@@ -18,16 +19,26 @@ namespace HPImageViewer
     internal class ImageView : FrameworkElement, IDrawingCanvas, IDocument
     {
 
+        public static readonly DependencyProperty BackgroundProperty = Panel.BackgroundProperty.AddOwner(typeof(ImageView), (PropertyMetadata)new FrameworkPropertyMetadata(Panel.BackgroundProperty.DefaultMetadata.DefaultValue, FrameworkPropertyMetadataOptions.AffectsRender));
+        /// <summary>Identifies the <see cref="P:System.Windows.Controls.Control.Foreground" /> dependency property.</summary>
+        /// <returns>The brush that is used to fill the background of the control. The default is <see cref="P:System.Windows.Media.Brushes.Transparent" />.</returns>
+        public Brush Background
+        {
+            get => (Brush)this.GetValue(ImageView.BackgroundProperty);
+            set => this.SetValue(ImageView.BackgroundProperty, (object)value);
+        }
+
+
         public ImageView()
         {
 
+
             _IBackgroundLayers = new List<IBackgroundLayer>()
             {
-                new GridBackgroundLayer(),
+                //new GridBackgroundLayer(),
                 new CrossHairLayer(),
                 new ViewingInfoLayer(),
             };
-
             _renderEngine = new RenderEngine();
             _renderEngine.RenderRequested += _renderEngine_RenderRequested;
 
@@ -176,6 +187,7 @@ namespace HPImageViewer
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
+            RenderBackgroundColor(drawingContext);
             var renderContext = GetRenderContext(drawingContext);
             _IBackgroundLayers.ForEach(n => n.Render(renderContext));
             ImageRender?.Render(renderContext);
@@ -183,6 +195,11 @@ namespace HPImageViewer
             {
                 roiRender.Render(renderContext);
             }
+        }
+        private void RenderBackgroundColor(DrawingContext drawingContext)
+        {
+            var background = this.Background;
+            drawingContext.DrawRectangle(background, null, new Rect(0, 0, ActualWidth, ActualHeight));
         }
 
         private ImageViewerDesc _imageViewerDesc;
