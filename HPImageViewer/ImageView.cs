@@ -6,7 +6,6 @@ using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
 using OpenCvSharp;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,17 +27,12 @@ namespace HPImageViewer
             set => this.SetValue(ImageView.BackgroundProperty, (object)value);
         }
 
+        private LayerCollection _layerCollection = new LayerCollection();
 
         public ImageView()
         {
 
 
-            _IBackgroundLayers = new List<IBackgroundLayer>()
-            {
-                //new GridBackgroundLayer(),
-                new CrossHairLayer(),
-                new ViewingInfoLayer(),
-            };
             _renderEngine = new RenderEngine();
             _renderEngine.RenderRequested += _renderEngine_RenderRequested;
 
@@ -58,7 +52,6 @@ namespace HPImageViewer
         }
 
         private readonly RenderEngine _renderEngine;
-        readonly List<IBackgroundLayer> _IBackgroundLayers;
 
         public ROIRenderCollection ROIRenders { get; private set; }
 
@@ -189,12 +182,12 @@ namespace HPImageViewer
             base.OnRender(drawingContext);
             RenderBackgroundColor(drawingContext);
             var renderContext = GetRenderContext(drawingContext);
-            _IBackgroundLayers.ForEach(n => n.Render(renderContext));
             ImageRender?.Render(renderContext);
             foreach (var roiRender in ROIRenders)
             {
                 roiRender.Render(renderContext);
             }
+            _layerCollection.ForegroundLayers.ForEach(n => n.Render(renderContext));
         }
         private void RenderBackgroundColor(DrawingContext drawingContext)
         {

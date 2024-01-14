@@ -1,6 +1,6 @@
 ﻿namespace HPImageViewer.Rendering.Layers
 {
-    internal interface IBackgroundLayer : IRender
+    internal interface ILayer : IRender
     {
     }
 }

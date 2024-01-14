@@ -5,13 +5,13 @@ using System.Windows.Media;
 
 namespace HPImageViewer.Rendering.Layers
 {
-    internal class GridBackgroundLayer : RenderBase, IBackgroundLayer
+    internal class GridLayer : RenderBase, ILayer
     {
         static Pen _LightPen;
         static Pen _DarkPen;
 
 
-        static GridBackgroundLayer()
+        static GridLayer()
         {
             _LightPen = new Pen(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C3C")), 0);
             _LightPen.Freeze();

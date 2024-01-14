@@ -5,7 +5,7 @@ using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewer.Rendering.Layers
 {
-    internal class ViewingInfoLayer : IBackgroundLayer
+    internal class ViewingInfoLayer : ILayer
     {
         public void Render(RenderContext renderContext)
         {

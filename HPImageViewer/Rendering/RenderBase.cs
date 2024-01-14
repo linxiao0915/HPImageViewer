@@ -8,7 +8,9 @@ namespace HPImageViewer.Rendering
         public void Render(RenderContext renderContext)
         {
             RenderTransform = renderContext.RenderTransform;
-            if (NeedRender(renderContext) == false)
+            if (renderContext.RenderSize.Width <= 0
+                || renderContext.RenderSize.Height <= 0
+                || NeedRender(renderContext) == false)
                 return;
             OnRender(renderContext);
         }
