@@ -12,13 +12,14 @@
   x:Name="imageViewer"
   d:DesignHeight="450"
   d:DesignWidth="800"
+  Focusable="True"
   mc:Ignorable="d">
   <UserControl.InputBindings>
     <KeyBinding
       Key="A"
-      Command="{Binding SelectAllCommand}"
+      Command="{Binding SelectAllCommand, ElementName=imageViewer}"
       Modifiers="Control" />
-    <KeyBinding Key="Delete" Command="{Binding DeleteCommand}" />
+    <KeyBinding Key="Delete" Command="{Binding DeleteCommand, ElementName=imageViewer}" />
   </UserControl.InputBindings>
   <b:Interaction.Behaviors>
     <behaviors:ToolOperatingBehavior />
