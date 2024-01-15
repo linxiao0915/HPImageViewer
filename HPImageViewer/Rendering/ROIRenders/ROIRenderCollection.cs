@@ -24,7 +24,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             {
                 var render = RenderFactory.CreateROIRender(n);
                 render.RenderTransform = coordTransform;
-                rOIRenderCollection.Add(render);
+                rOIRenderCollection.ROIRenders.Add(render);
             });
             return rOIRenderCollection;
 
