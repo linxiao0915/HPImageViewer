@@ -31,7 +31,7 @@ namespace HPImageViewer.Tools
             _selectMode = SelectionMode.None;
             var point = e.GetPosition(drawingCanvas);
 
-            foreach (var item in drawingCanvas.ROIRenders.GetSelectedItems())
+            foreach (var item in drawingCanvas.ROIRenderCollection.GetSelectedItems())
             {
                 int handleNumber = item.HitTest(point);
 
@@ -44,7 +44,7 @@ namespace HPImageViewer.Tools
                     resizedObjectHandle = handleNumber;
 
                     // Since we want to resize only one object, unselect all other objects
-                    drawingCanvas.ROIRenders.UnselectAll();
+                    drawingCanvas.ROIRenderCollection.UnselectAll();
                     item.IsSelected = true;
 
                     //commandChangeState = new CommandChangeState(drawArea.GraphicsList);
@@ -55,14 +55,14 @@ namespace HPImageViewer.Tools
 
             if (_selectMode == SelectionMode.None)
             {
-                int n1 = drawingCanvas.ROIRenders.Count;
+                int n1 = drawingCanvas.ROIRenderCollection.Count;
                 ROIRender o = null;
 
                 for (int i = 0; i < n1; i++)
                 {
-                    if (drawingCanvas.ROIRenders[i].HitTest(point) == 0)
+                    if (drawingCanvas.ROIRenderCollection[i].HitTest(point) == 0)
                     {
-                        o = drawingCanvas.ROIRenders[i];
+                        o = drawingCanvas.ROIRenderCollection[i];
                         break;
                     }
                 }
@@ -73,7 +73,7 @@ namespace HPImageViewer.Tools
                     // Unselect all if Ctrl is not pressed and clicked object is not selected yet
                     if (Keyboard.IsKeyDown(Key.LeftCtrl) == false && Keyboard.IsKeyDown(Key.LeftCtrl) == false && !o.IsSelected)
                     {
-                        drawingCanvas.ROIRenders.UnselectAll();
+                        drawingCanvas.ROIRenderCollection.UnselectAll();
                     }
 
                     o.IsSelected = true;
@@ -89,13 +89,13 @@ namespace HPImageViewer.Tools
             {
                 // click on background
                 if (Keyboard.IsKeyDown(Key.LeftCtrl) == false && Keyboard.IsKeyDown(Key.LeftCtrl) == false)
-                    drawingCanvas.ROIRenders.UnselectAll();
+                    drawingCanvas.ROIRenderCollection.UnselectAll();
 
 
                 var transformedPoint = drawingCanvas.CoordTransform.ToDomain(point);
                 var selectionRectangle = new SelectionRectangle() { Left = transformedPoint.X, Top = transformedPoint.Y, Width = 1d / drawingCanvas.Scale, Height = 1d / drawingCanvas.Scale };
 
-                ToolObject.AddNewObject(drawingCanvas, selectionRectangle);
+                ToolObject.PrepareNewObject(drawingCanvas, selectionRectangle);
                 selectionRectangle.IsSelected = false;
 
                 _selectMode = SelectionMode.NetSelection;
@@ -127,7 +127,7 @@ namespace HPImageViewer.Tools
             {
                 Cursor cursor = null;
 
-                for (int i = 0; i < drawingCanvas.ROIRenders.Count; i++)
+                for (int i = 0; i < drawingCanvas.ROIRenderCollection.Count; i++)
                 {
                     // int n = drawingCanvas.ROIRenders[i].HitTest(point);
 
@@ -172,7 +172,7 @@ namespace HPImageViewer.Tools
             // move
             if (_selectMode == SelectionMode.Move)
             {
-                foreach (var o in drawingCanvas.ROIRenders.GetSelectedItems())
+                foreach (var o in drawingCanvas.ROIRenderCollection.GetSelectedItems())
                 {
                     o.MoveTo(dx, dy);
                 }
@@ -185,7 +185,7 @@ namespace HPImageViewer.Tools
             if (_selectMode == SelectionMode.NetSelection)
             {
                 // Resize selection rectangle
-                drawingCanvas.ROIRenders[0].MoveHandleTo(5,
+                drawingCanvas.ROIRenderCollection.AddingRoiRender?.MoveHandleTo(5,
                    point);
                 drawingCanvas.Rerender();
             }
@@ -210,11 +210,11 @@ namespace HPImageViewer.Tools
 
             if (_selectMode == SelectionMode.NetSelection)
             {
-                var r = (SelectionRectangle)drawingCanvas.ROIRenders[0];
+                var r = (SelectionRectangle)drawingCanvas.ROIRenderCollection.AddingRoiRender;
                 r.Normalize();
                 var rect = r.Rectangle;
-                drawingCanvas.ROIRenders.Remove(r);
-                foreach (var rOIRenders in drawingCanvas.ROIRenders)
+                drawingCanvas.ROIRenderCollection.AddingRoiRender = null;
+                foreach (var rOIRenders in drawingCanvas.ROIRenderCollection)
                 {
                     if (rOIRenders.IntersectsWith(rect))
                     {

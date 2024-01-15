@@ -1,10 +1,10 @@
 ﻿using HPImageViewer.Core.Persistence;
+using HPImageViewer.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using HPImageViewer.Utils;
 
 
 namespace HPImageViewer.Rendering.ROIRenders
@@ -15,13 +15,29 @@ namespace HPImageViewer.Rendering.ROIRenders
         public PolygonDesc PolygonDesc
         {
             get => ROIDesc as PolygonDesc;
-            set => ROIDesc = value;
+            set
+            {
+                if (ROIDesc != value)
+                {
+                    ROIDesc = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public List<HPImageViewer.Core.Primitives.Point> Points
         {
             get => PolygonDesc.Vertices;
-            set => PolygonDesc.Vertices = value;
+            set
+            {
+                if (PolygonDesc.Vertices != value)
+                {
+                    PolygonDesc.Vertices = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public bool IsClosed

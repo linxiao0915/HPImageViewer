@@ -53,7 +53,7 @@ namespace HPImageViewer
 
         private readonly RenderEngine _renderEngine;
 
-        public ROIRenderCollection ROIRenders { get; private set; }
+        public ROIRenderCollection ROIRenderCollection { get; private set; }
 
         public ImageRender ImageRender
         {
@@ -171,10 +171,6 @@ namespace HPImageViewer
             TransformMatrix = transformMatrix;
         }
 
-
-
-
-
         /// <summary>When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.</summary>
         /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
         protected override void OnRender(DrawingContext drawingContext)
@@ -183,10 +179,8 @@ namespace HPImageViewer
             RenderBackgroundColor(drawingContext);
             var renderContext = GetRenderContext(drawingContext);
             ImageRender?.Render(renderContext);
-            foreach (var roiRender in ROIRenders)
-            {
-                roiRender.Render(renderContext);
-            }
+            ROIRenderCollection.Render(renderContext);
+
             _layerCollection.ForegroundLayers.ForEach(n => n.Render(renderContext));
         }
         private void RenderBackgroundColor(DrawingContext drawingContext)
@@ -205,19 +199,38 @@ namespace HPImageViewer
             }
         }
 
+        public event EventHandler<ImageViewerDesc> DocumentUpdated;
+        void OnDocumentUpdated(ImageViewerDesc desc)
+        {
+            DocumentUpdated?.Invoke(this, desc);
+        }
+
         void SetDocument(ImageViewerDesc imageViewerDesc)
         {
+            //todo:线程安全
             _imageViewerDesc = imageViewerDesc;
-            ROIRenders = ROIRenderCollection.CreateByROIDescs(imageViewerDesc.ROIDescs, CoordTransform);
+            if (ROIRenderCollection != null)
+            {
+                ROIRenderCollection.RoisChanged -= ROIRenderCollection_RoisChanged;
+            }
+            ROIRenderCollection = ROIRenderCollection.CreateByROIDescs(imageViewerDesc.ROIDescs, CoordTransform);
+            ROIRenderCollection.RoisChanged += ROIRenderCollection_RoisChanged;
+
             Rerender();
+        }
+
+        private void ROIRenderCollection_RoisChanged(object? sender, EventArgs e)
+        {
+            OnDocumentUpdated(this._imageViewerDesc);
         }
 
         public void AddROIs(params ROIDesc[] rois)
         {
             foreach (var roiDesc in ROIRenderCollection.CreateByROIDescs(rois.ToList(), CoordTransform))
             {
-                ROIRenders.Add(roiDesc);
+                ROIRenderCollection.Add(roiDesc);
             }
+            OnDocumentUpdated(this._imageViewerDesc);
             Rerender();
 
         }

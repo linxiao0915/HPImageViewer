@@ -13,7 +13,15 @@ namespace HPImageViewer.Rendering.ROIRenders
         private RectangleDesc rectangleDesc
         {
             get => (RectangleDesc)ROIDesc;
-            set => ROIDesc = value;
+            set
+            {
+                if (ROIDesc != value)
+                {
+                    ROIDesc = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public RectangleRender() : this(new RectangleDesc())
@@ -27,24 +35,57 @@ namespace HPImageViewer.Rendering.ROIRenders
         public double Left
         {
             get => rectangleDesc.Left;
-            set => rectangleDesc.Left = value;
+            set
+            {
+                if (rectangleDesc.Left != value)
+                {
+                    rectangleDesc.Left = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
+
         public double Top
         {
             get => rectangleDesc.Top;
-            set => rectangleDesc.Top = value;
+            set
+            {
+                if (rectangleDesc.Top != value)
+                {
+                    rectangleDesc.Top = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public double Width
         {
             get => rectangleDesc.Width;
-            set => rectangleDesc.Width = value;
+            set
+            {
+                if (rectangleDesc.Width != value)
+                {
+                    rectangleDesc.Width = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public double Height
         {
             get => rectangleDesc.Height;
-            set => rectangleDesc.Height = value;
+            set
+            {
+                if (rectangleDesc.Height != value)
+                {
+                    rectangleDesc.Height = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public Rect Rectangle => MathUtil.GetNormalizedRectangle(rectangleDesc.Left, rectangleDesc.Top, rectangleDesc.Left + rectangleDesc.Width, rectangleDesc.Top + rectangleDesc.Height);

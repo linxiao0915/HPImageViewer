@@ -21,24 +21,57 @@ namespace HPImageViewer.Rendering.ROIRenders
         private EllipseDesc EllipseDesc
         {
             get => (EllipseDesc)ROIDesc;
-            set => ROIDesc = value;
+            set
+            {
+                if (ROIDesc != value)
+                {
+                    ROIDesc = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public double CenterX
         {
             get => EllipseDesc.CenterX;
-            set => EllipseDesc.CenterX = value;
+            set
+            {
+                if (EllipseDesc.CenterX != value)
+                {
+                    EllipseDesc.CenterX = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
+
         public double CenterY
         {
             get => EllipseDesc.CenterY;
-            set => EllipseDesc.CenterY = value;
+            set
+            {
+                if (EllipseDesc.CenterY != value)
+                {
+                    EllipseDesc.CenterY = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public double R
         {
             get => EllipseDesc.R;
-            set => EllipseDesc.R = value;
+            set
+            {
+                if (EllipseDesc.R != value)
+                {
+                    EllipseDesc.R = value;
+                    OnPropertyChanged();
+                }
+
+            }
         }
 
         public Rect Rectangle => new Rect(CenterX - Math.Abs(R), CenterY - Math.Abs(R), 2 * Math.Abs(R), 2 * Math.Abs(R));

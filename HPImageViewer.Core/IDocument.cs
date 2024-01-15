@@ -7,5 +7,7 @@ namespace HPImageViewer.Core
     {
         ImageViewerDesc ImageViewerDesc { get; set; }
 
+        event EventHandler<ImageViewerDesc> DocumentUpdated;
+
     }
 }

@@ -1,16 +1,16 @@
-﻿using System;
+﻿using HPImageViewer.Core.Persistence;
+using HPImageViewer.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HPImageViewer.Core.Persistence;
-using HPImageViewer.Utils;
 
 namespace HPImageViewer.Rendering.ROIRenders
 {
     internal class ROIRenderCollection : IList<ROIRender>
     {
+        public event EventHandler RoisChanged;
+
         private ROIRenderCollection()
         {
 
@@ -24,7 +24,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             {
                 var render = RenderFactory.CreateROIRender(n);
                 render.RenderTransform = coordTransform;
-                rOIRenderCollection.ROIRenders.Add(render);
+                rOIRenderCollection.Add(render);
             });
             return rOIRenderCollection;
 
@@ -50,16 +50,22 @@ namespace HPImageViewer.Rendering.ROIRenders
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
         public void Add(ROIRender item)
         {
-            ROIRenders.Add(item);
-            RoiDescs.Add(item.ROIDesc);
+            Insert(0, item);
+            //item.PropertyChanged += Item_PropertyChanged;
+            //ROIRenders.Add(item);
+            //RoiDescs.Add(item.ROIDesc);
+        }
+
+        private void Item_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            RoisChanged?.Invoke(this, null);
         }
 
         /// <summary>Removes all items from the <see cref="T:System.Collections.Generic.ICollection`1" />.</summary>
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1" /> is read-only.</exception>
         public void Clear()
         {
-            ROIRenders.Clear();
-            RoiDescs.Clear();
+            ROIRenders.ToList().ForEach(n => Remove(n));
         }
 
         /// <summary>Determines whether the <see cref="T:System.Collections.Generic.ICollection`1" /> contains a specific value.</summary>
@@ -91,8 +97,14 @@ namespace HPImageViewer.Rendering.ROIRenders
         /// <see langword="true" /> if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, <see langword="false" />. This method also returns <see langword="false" /> if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.</returns>
         public bool Remove(ROIRender item)
         {
+            item.PropertyChanged -= Item_PropertyChanged;
             RoiDescs.Remove(item.ROIDesc);
-            return ROIRenders.Remove(item);
+            var ok = ROIRenders.Remove(item);
+            if (ok)
+            {
+                RoisChanged?.Invoke(this, null);
+            }
+            return ok;
 
         }
 
@@ -122,8 +134,11 @@ namespace HPImageViewer.Rendering.ROIRenders
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IList`1" /> is read-only.</exception>
         public void Insert(int index, ROIRender item)
         {
+            item.PropertyChanged -= Item_PropertyChanged;
+            item.PropertyChanged += Item_PropertyChanged;
             RoiDescs.Insert(index, item.ROIDesc);
             ROIRenders.Insert(index, item);
+            RoisChanged?.Invoke(this, null);
         }
 
         /// <summary>Removes the <see cref="T:System.Collections.Generic.IList`1" /> item at the specified index.</summary>
@@ -133,8 +148,8 @@ namespace HPImageViewer.Rendering.ROIRenders
         /// <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IList`1" /> is read-only.</exception>
         public void RemoveAt(int index)
         {
-            RoiDescs.RemoveAt(index);
-            ROIRenders.RemoveAt(index);
+            var item = ROIRenders[index];
+            Remove(item);
         }
 
         /// <summary>Gets or sets the element at the specified index.</summary>
@@ -153,5 +168,20 @@ namespace HPImageViewer.Rendering.ROIRenders
         {
             return ROIRenders.Where(n => n.IsSelected).ToList();
         }
+
+        public void Render(RenderContext renderContext)
+        {
+            foreach (var roiRender in this)
+            {
+                roiRender.Render(renderContext);
+            }
+
+            AddingRoiRender?.Render(renderContext);
+        }
+
+        /// <summary>
+        /// 正在添加的ROI
+        /// </summary>
+        public ROIRender AddingRoiRender { get; set; }
     }
 }

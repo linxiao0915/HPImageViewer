@@ -47,16 +47,34 @@ namespace HPImageViewer.Tools
         /// <param name="e"></param>
         public virtual void OnMouseUp(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
-            _isAdding = false;
+            if (_isAdding)
+            {
+                AddNewObject(drawingCanvas);
+                _isAdding = false;
+            }
+
         }
 
 
-        public static void AddNewObject(IDrawingCanvas drawingCanvas, ROIRender roiRender)
+        public static void PrepareNewObject(IDrawingCanvas drawingCanvas, ROIRender roiRender)
         {
             roiRender.IsSelected = true;
             roiRender.RenderTransform = drawingCanvas.CoordTransform;
-            drawingCanvas.ROIRenders.Insert(0, roiRender);
+            drawingCanvas.ROIRenderCollection.AddingRoiRender = roiRender;
+            //drawingCanvas.ROIRenderCollection.Insert(0, roiRender);
         }
+
+        public static void AddNewObject(IDrawingCanvas drawingCanvas)
+        {
+            var roiRender = drawingCanvas.ROIRenderCollection.AddingRoiRender;
+            if (roiRender != null)
+            {
+                drawingCanvas.ROIRenderCollection.Insert(0, roiRender);
+                drawingCanvas.ROIRenderCollection.AddingRoiRender = null;
+            }
+        }
+
+
 
     }
 }

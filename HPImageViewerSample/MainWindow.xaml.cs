@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace HPImageViewerSample
 {
@@ -16,8 +15,15 @@ namespace HPImageViewerSample
         {
             InitializeComponent();
             this.DataContext = new MainWindowViewModel(this.ImageControl);
+            ImageControl.DocumentUpdated += ImageControl_DocumentUpdated;
             //CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
         }
+
+        private void ImageControl_DocumentUpdated(object? sender, HPImageViewer.Core.Persistence.ImageViewerDesc e)
+        {
+            Console.WriteLine($"文档更新+{DateTime.Now}");
+        }
+
         private Stopwatch _stopwatch = Stopwatch.StartNew();
         private double _lastTime;
         private double _lowestFrameTime;

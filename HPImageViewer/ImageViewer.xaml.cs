@@ -28,7 +28,13 @@ namespace HPImageViewer
             InitializeComponent();
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
             SetCurrentValue(BackgroundProperty, new SolidColorBrush(Colors.Black));
+            ImageViewDrawCanvas.DocumentUpdated += ImageViewDrawCanvas_DocumentUpdated; ;
 
+        }
+
+        private void ImageViewDrawCanvas_DocumentUpdated(object? sender, ImageViewerDesc e)
+        {
+            DocumentUpdated?.Invoke(this, e);
         }
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
@@ -87,12 +93,12 @@ namespace HPImageViewer
 
             DeleteCommand = new ImageViewerCommand(() =>
             {
-                var selectedROIs = ImageViewDrawCanvas.ROIRenders.GetSelectedROIs();
+                var selectedROIs = ImageViewDrawCanvas.ROIRenderCollection.GetSelectedROIs();
                 if (selectedROIs.Any())
                 {
                     foreach (var selectedROI in selectedROIs)
                     {
-                        ImageViewDrawCanvas.ROIRenders.Remove(selectedROI);
+                        ImageViewDrawCanvas.ROIRenderCollection.Remove(selectedROI);
                     }
                     ImageViewDrawCanvas.Rerender();
                 }
@@ -100,7 +106,7 @@ namespace HPImageViewer
 
             SelectAllCommand = new ImageViewerCommand(() =>
             {
-                foreach (var roiRender in ImageViewDrawCanvas.ROIRenders)
+                foreach (var roiRender in ImageViewDrawCanvas.ROIRenderCollection)
                 {
                     roiRender.IsSelected = true;
                 }
@@ -109,22 +115,22 @@ namespace HPImageViewer
 
             MoveToFrontCommand = new ImageViewerCommand(() =>
             {
-                var selectedROIs = ImageViewDrawCanvas.ROIRenders.GetSelectedROIs();
-                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Remove(n));
+                var selectedROIs = ImageViewDrawCanvas.ROIRenderCollection.GetSelectedROIs();
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenderCollection.Remove(n));
                 selectedROIs.Reverse();
-                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Insert(0, n));
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenderCollection.Insert(0, n));
 
                 ImageViewDrawCanvas.Rerender();
 
-            }, () => ImageViewDrawCanvas.ROIRenders.GetSelectedROIs().Count > 0);
+            }, () => ImageViewDrawCanvas.ROIRenderCollection.GetSelectedROIs().Count > 0);
 
             MoveToBackCommand = new ImageViewerCommand(() =>
             {
-                var selectedROIs = ImageViewDrawCanvas.ROIRenders.GetSelectedROIs();
-                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Remove(n));
-                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenders.Add(n));
+                var selectedROIs = ImageViewDrawCanvas.ROIRenderCollection.GetSelectedROIs();
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenderCollection.Remove(n));
+                selectedROIs.ForEach(n => ImageViewDrawCanvas.ROIRenderCollection.Add(n));
                 ImageViewDrawCanvas.Rerender();
-            }, () => ImageViewDrawCanvas.ROIRenders.GetSelectedROIs().Count > 0);
+            }, () => ImageViewDrawCanvas.ROIRenderCollection.GetSelectedROIs().Count > 0);
         }
 
 
@@ -133,6 +139,9 @@ namespace HPImageViewer
             get => ImageViewDrawCanvas.ImageViewerDesc;
             set => ImageViewDrawCanvas.ImageViewerDesc = value;
         }
+
+        public event EventHandler<ImageViewerDesc> DocumentUpdated;
+
         DataTrafficLimiter _dataTrafficLimiter = new(100, 512 * 512 * 5);
         public void SetImage(object image)
         {
