@@ -24,8 +24,12 @@ namespace HPImageViewer.Rendering.ROIRenders
             {
                 var render = RenderFactory.CreateROIRender(n);
                 render.RenderTransform = coordTransform;
+                render.PropertyChanged += rOIRenderCollection.Item_PropertyChanged;
                 rOIRenderCollection.ROIRenders.Add(render);
             });
+
+
+
             return rOIRenderCollection;
 
         }
@@ -36,7 +40,9 @@ namespace HPImageViewer.Rendering.ROIRenders
         public IEnumerator<ROIRender> GetEnumerator()
         {
             return ROIRenders.GetEnumerator();
+
         }
+
 
         /// <summary>Returns an enumerator that iterates through a collection.</summary>
         /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
