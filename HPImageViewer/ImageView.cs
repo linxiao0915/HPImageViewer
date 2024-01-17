@@ -199,10 +199,10 @@ namespace HPImageViewer
             }
         }
 
-        public event EventHandler<ImageViewerDesc> DocumentUpdated;
+        public event EventHandler DocumentUpdated;
         void OnDocumentUpdated(ImageViewerDesc desc)
         {
-            DocumentUpdated?.Invoke(this, desc);
+            DocumentUpdated?.Invoke(this, null);
         }
 
         void SetDocument(ImageViewerDesc imageViewerDesc)

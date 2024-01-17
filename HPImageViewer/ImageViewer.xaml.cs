@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks.Dataflow;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -32,9 +33,10 @@ namespace HPImageViewer
 
         }
 
-        private void ImageViewDrawCanvas_DocumentUpdated(object? sender, ImageViewerDesc e)
+        private void ImageViewDrawCanvas_DocumentUpdated(object? sender, EventArgs e)
         {
-            DocumentUpdated?.Invoke(this, e);
+            RoutedEventArgs args = new RoutedEventArgs(DocumentUpdatedEvent, this);
+            RaiseEvent(args);
         }
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
@@ -140,7 +142,20 @@ namespace HPImageViewer
             set => ImageViewDrawCanvas.ImageViewerDesc = value;
         }
 
-        public event EventHandler<ImageViewerDesc> DocumentUpdated;
+
+
+        public static readonly RoutedEvent DocumentUpdatedEvent = EventManager.RegisterRoutedEvent(
+       "DocumentUpdated",
+       RoutingStrategy.Bubble,
+       typeof(EventHandler),
+       typeof(ImageViewer));
+
+        public event EventHandler DocumentUpdated
+        {
+            add { AddHandler(DocumentUpdatedEvent, value); }
+            remove { RemoveHandler(DocumentUpdatedEvent, value); }
+        }
+
 
         DataTrafficLimiter _dataTrafficLimiter = new(100, 512 * 512 * 5);
         public void SetImage(object image)
