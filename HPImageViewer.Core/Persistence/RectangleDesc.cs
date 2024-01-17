@@ -28,7 +28,7 @@
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return $"Left:{Left:N4},Top:{Top:N4},Width:{Width:N4},Height:{Height:N4}";
+            return $"{nameof(Left)}:{Left:N4},{nameof(Top)}:{Top:N4},{nameof(Width)}:{Width:N4},{nameof(Height)}:{Height:N4}";
         }
     }
 
