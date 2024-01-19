@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace HPImageViewer.Rendering.ROIRenders
 {
-    internal class ROIRenderCollection : IList<ROIRender>
+    public class ROIRenderCollection : IList<ROIRender>
     {
         public event EventHandler RoisChanged;
 

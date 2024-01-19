@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace HPImageViewer.Rendering.ROIRenders
 {
-    internal abstract class ROIRender : RenderBase, IMovable, IResizable, INotifyPropertyChanged
+    public abstract class ROIRender : RenderBase, IMovable, IResizable, INotifyPropertyChanged
     {
         public ROIDesc ROIDesc { get; protected set; }
 

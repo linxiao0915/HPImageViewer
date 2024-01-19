@@ -15,7 +15,7 @@ using Rect = System.Windows.Rect;
 
 namespace HPImageViewer
 {
-    internal class ImageView : FrameworkElement, IDrawingCanvas, IDocument
+    public class ImageView : FrameworkElement, IDrawingCanvas, IDocument
     {
 
         public static readonly DependencyProperty BackgroundProperty = Panel.BackgroundProperty.AddOwner(typeof(ImageView), (PropertyMetadata)new FrameworkPropertyMetadata(Panel.BackgroundProperty.DefaultMetadata.DefaultValue, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -41,6 +41,24 @@ namespace HPImageViewer
             //_ROIRender.Add(new RectangleRender(new RectangleDesc()));
 
         }
+
+        public static readonly RoutedEvent DocumentUpdatedEvent = EventManager.RegisterRoutedEvent(nameof(DocumentUpdated), RoutingStrategy.Bubble, typeof(EventHandler), typeof(ImageView));
+
+        public event EventHandler DocumentUpdated
+        {
+            add { AddHandler(DocumentUpdatedEvent, value); }
+            remove { RemoveHandler(DocumentUpdatedEvent, value); }
+        }
+
+
+        public static readonly RoutedEvent ShapeDrawCompletedEvent = EventManager.RegisterRoutedEvent(nameof(ShapeDrawCompleted), RoutingStrategy.Bubble, typeof(EventHandler), typeof(ImageView));
+
+        public event EventHandler ShapeDrawCompleted
+        {
+            add { AddHandler(ShapeDrawCompletedEvent, value); }
+            remove { RemoveHandler(ShapeDrawCompletedEvent, value); }
+        }
+
 
         private void _renderEngine_RenderRequested(object? sender, ImageRender e)
         {
@@ -171,6 +189,8 @@ namespace HPImageViewer
             TransformMatrix = transformMatrix;
         }
 
+
+
         /// <summary>When overridden in a derived class, participates in rendering operations that are directed by the layout system. The rendering instructions for this element are not used directly when this method is invoked, and are instead preserved for later asynchronous use by layout and drawing.</summary>
         /// <param name="drawingContext">The drawing instructions for a specific element. This context is provided to the layout system.</param>
         protected override void OnRender(DrawingContext drawingContext)
@@ -199,12 +219,6 @@ namespace HPImageViewer
             }
         }
 
-        public event EventHandler DocumentUpdated;
-        void OnDocumentUpdated(ImageViewerDesc desc)
-        {
-            DocumentUpdated?.Invoke(this, null);
-        }
-
         void SetDocument(ImageViewerDesc imageViewerDesc)
         {
             //todo:线程安全
@@ -221,7 +235,7 @@ namespace HPImageViewer
 
         private void ROIRenderCollection_RoisChanged(object? sender, EventArgs e)
         {
-            OnDocumentUpdated(this._imageViewerDesc);
+            this.RaiseEvent(new RoutedEventArgs(DocumentUpdatedEvent));
         }
 
         public void AddROIs(params ROIDesc[] rois)
@@ -230,7 +244,7 @@ namespace HPImageViewer
             {
                 ROIRenderCollection.Add(roiDesc);
             }
-            OnDocumentUpdated(this._imageViewerDesc);
+            this.RaiseEvent(new RoutedEventArgs(DocumentUpdatedEvent));
             Rerender();
 
         }

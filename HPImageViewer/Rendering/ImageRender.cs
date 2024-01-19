@@ -8,7 +8,7 @@ using Rect = System.Windows.Rect;
 
 namespace HPImageViewer.Rendering
 {
-    internal class ImageRender : RenderBase, IDisposable
+    public class ImageRender : RenderBase, IDisposable
     {
 
         // ImageSource _imageSource;

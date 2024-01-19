@@ -1,10 +1,13 @@
 ﻿using HPImageViewer.Rendering.ROIRenders;
+using System.Windows;
 using System.Windows.Input;
 
 namespace HPImageViewer.Tools
 {
     internal abstract class ToolObject : ITool
     {
+
+
         protected bool _isAdding = false;
         private Cursor _Cursor;
         /// <summary>
@@ -71,6 +74,9 @@ namespace HPImageViewer.Tools
             {
                 drawingCanvas.ROIRenderCollection.Insert(0, roiRender);
                 drawingCanvas.ROIRenderCollection.AddingRoiRender = null;
+
+                RoutedEventArgs args = new RoutedEventArgs(ImageView.ShapeDrawCompletedEvent);
+                drawingCanvas.RaiseEvent(args);
             }
         }
 

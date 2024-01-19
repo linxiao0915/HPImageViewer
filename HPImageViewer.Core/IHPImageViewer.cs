@@ -13,5 +13,7 @@ namespace HPImageViewer.Core
         void FitImageToArea();
 
         public ToolType ActivatedTool { get; set; }
+
+        event EventHandler ShapeDrawCompleted;
     }
 }

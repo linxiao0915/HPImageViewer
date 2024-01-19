@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace HPImageViewer.Utils
 {
-    internal interface ICoordTransform
+    public interface ICoordTransform
     {
         //void ToDomain(double dx, double dy, out double wx, out double wy);
         //void ToDevice(double wx, double wy, out double dx, out double dy);

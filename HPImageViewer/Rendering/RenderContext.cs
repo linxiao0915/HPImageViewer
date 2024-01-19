@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace HPImageViewer.Rendering
 {
-    internal class RenderContext : IRenderContext
+    public class RenderContext : IRenderContext
     {
 
         public RenderContext(IDrawingContext drawingContext)

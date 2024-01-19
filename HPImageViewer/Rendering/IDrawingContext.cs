@@ -5,7 +5,7 @@ using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewer.Rendering
 {
-    internal interface IDrawingContext
+    public interface IDrawingContext
     {
         //todo:移除WPF框架元素,平台无关
         public void DrawRectangle(Brush brush, Pen pen, Rect rectangle);

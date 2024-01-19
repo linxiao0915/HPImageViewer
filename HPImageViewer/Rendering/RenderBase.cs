@@ -2,7 +2,7 @@
 
 namespace HPImageViewer.Rendering
 {
-    internal abstract class RenderBase : IRender
+    public abstract class RenderBase : IRender
     {
         public ICoordTransform RenderTransform { get; set; }
         public void Render(RenderContext renderContext)

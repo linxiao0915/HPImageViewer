@@ -29,14 +29,20 @@ namespace HPImageViewer
             InitializeComponent();
             CompositionTarget.Rendering += new EventHandler(CompositionTarget_Rendering);
             SetCurrentValue(BackgroundProperty, new SolidColorBrush(Colors.Black));
-            ImageViewDrawCanvas.DocumentUpdated += ImageViewDrawCanvas_DocumentUpdated; ;
+            AddHandler(ImageView.DocumentUpdatedEvent, new RoutedEventHandler(ImageViewDrawCanvas_DocumentUpdated));
+            AddHandler(ImageView.ShapeDrawCompletedEvent, new RoutedEventHandler(ImageViewDrawCanvas_ShapeDrawCompleted));
 
         }
 
+
         private void ImageViewDrawCanvas_DocumentUpdated(object? sender, EventArgs e)
         {
-            RoutedEventArgs args = new RoutedEventArgs(DocumentUpdatedEvent, this);
-            RaiseEvent(args);
+            DocumentUpdated.Invoke(this, e);
+        }
+        public event EventHandler ShapeDrawCompleted;
+        private void ImageViewDrawCanvas_ShapeDrawCompleted(object? sender, EventArgs e)
+        {
+            ShapeDrawCompleted?.Invoke(sender, e);
         }
 
         /// <summary>Invoked when an unhandled <see cref="E:System.Windows.Input.Keyboard.KeyDown" /> attached event reaches an element in its route that is derived from this class. Implement this method to add class handling for this event.</summary>
@@ -46,6 +52,7 @@ namespace HPImageViewer
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
+
             this.Focus();
         }
 
@@ -142,19 +149,7 @@ namespace HPImageViewer
             set => ImageViewDrawCanvas.ImageViewerDesc = value;
         }
 
-
-
-        public static readonly RoutedEvent DocumentUpdatedEvent = EventManager.RegisterRoutedEvent(
-       "DocumentUpdated",
-       RoutingStrategy.Bubble,
-       typeof(EventHandler),
-       typeof(ImageViewer));
-
-        public event EventHandler DocumentUpdated
-        {
-            add { AddHandler(DocumentUpdatedEvent, value); }
-            remove { RemoveHandler(DocumentUpdatedEvent, value); }
-        }
+        public event EventHandler? DocumentUpdated;
 
 
         DataTrafficLimiter _dataTrafficLimiter = new(100, 512 * 512 * 5);
