@@ -37,7 +37,7 @@ namespace HPImageViewer
 
         private void ImageViewDrawCanvas_DocumentUpdated(object? sender, EventArgs e)
         {
-            DocumentUpdated.Invoke(this, e);
+            DocumentUpdated?.Invoke(this, e);
         }
         public event EventHandler ShapeDrawCompleted;
         private void ImageViewDrawCanvas_ShapeDrawCompleted(object? sender, EventArgs e)
