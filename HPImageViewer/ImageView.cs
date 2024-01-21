@@ -198,6 +198,8 @@ namespace HPImageViewer
             base.OnRender(drawingContext);
             RenderBackgroundColor(drawingContext);
             var renderContext = GetRenderContext(drawingContext);
+            _layerCollection.BackgroundLayers.ForEach(n => n.Render(renderContext));
+
             ImageRender?.Render(renderContext);
             ROIRenderCollection.Render(renderContext);
 

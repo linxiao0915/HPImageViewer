@@ -7,7 +7,7 @@ namespace HPImageViewer.Rendering.ROIRenders
         protected override void OnROIRender(RenderContext renderContext)
         {
             var drawingContext = renderContext.DrawingContext;
-            drawingContext.DrawRectangle(
+            drawingContext.DrawRegularRectangle(
             null,
                  new Pen(Brushes.White, ROIDesc.StrokeThickness),
                  DeviceRectangle);
@@ -19,7 +19,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             dashedPen.DashStyle = dashStyle;
 
 
-            drawingContext.DrawRectangle(
+            drawingContext.DrawRegularRectangle(
                 null,
                 dashedPen,
                 DeviceRectangle);

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using HPImageViewer.Utils;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using HPImageViewer.Utils;
 using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewer.Rendering
@@ -14,9 +14,18 @@ namespace HPImageViewer.Rendering
         {
             _drawingContext = drawingContext;
         }
-        public void DrawRectangle(Brush brush, Pen pen, Rect rectangle)
+        public void DrawRectangle(Brush brush, Pen pen, Rect rectangle, double angle)
         {
-            _drawingContext.DrawRectangle(brush, pen, rectangle);
+            if (angle == 0)
+            {
+                _drawingContext.DrawRectangle(brush, pen, rectangle);
+            }
+            else
+            {
+                var rect = new RectangleGeometry() { Rect = rectangle, Transform = new RotateTransform(-angle, rectangle.X + rectangle.Width / 2, rectangle.Y + rectangle.Height / 2) };
+
+                _drawingContext.DrawGeometry(brush, pen, rect);
+            }
 
         }
 

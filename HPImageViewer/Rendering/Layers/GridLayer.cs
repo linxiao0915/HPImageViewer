@@ -42,7 +42,7 @@ namespace HPImageViewer.Rendering.Layers
             var drawingContext = renderContext.DrawingContext;
             if (deviceVerticalInternal < 10 || deviceHorizontalInternal < 10 || deviceHorizontalInternal > renderWidth || deviceVerticalInternal > renderHeight)
             {
-                drawingContext.DrawRectangle(_DarkPen.Brush, _DarkPen, new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height));
+                drawingContext.DrawRegularRectangle(_DarkPen.Brush, _DarkPen, new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height));
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace HPImageViewer.Rendering.Layers
 
 
 
-                    drawingContext.DrawRectangle(pen2.Brush, pen2, rect);
+                    drawingContext.DrawRegularRectangle(pen2.Brush, pen2, rect);
 
                     xPosition += (int)deviceHorizontalInternal;
                 } while (xPosition <= renderWidth);

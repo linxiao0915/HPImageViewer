@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using HPImageViewer;
 using HPImageViewer.Core;
 using HPImageViewer.Core.Persistence;
 using Microsoft.Win32;
@@ -19,6 +18,17 @@ namespace HPImageViewerSample
         public MainWindowViewModel(IHPImageViewer imageViewer)
         {
             _imageViewer = imageViewer;
+            _imageViewer.ImageViewerDesc = new ImageViewerDesc()
+            {
+                ROIDescs = new List<ROIDesc>()
+                {
+                    new RotatedRectDesc(){Angle=30},
+                  //  new RotatedRectDesc(){Angle=60},
+                  //    new RotatedRectDesc(){Angle=90},
+                  //new RotatedRectDesc(){Angle=120},
+                  //new RotatedRectDesc(){Angle=150},
+                }
+            };
         }
         private IHPImageViewer _imageViewer;
         [RelayCommand]
@@ -103,8 +113,6 @@ namespace HPImageViewerSample
             }
 
         }
-
-
 
         [RelayCommand]
         private void ExecuteChangeToolType(ToolType toolType)

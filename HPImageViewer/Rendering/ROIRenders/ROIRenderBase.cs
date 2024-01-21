@@ -82,7 +82,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             {
                 var rect = GetHandlePoint(i);
                 var drawingContext = renderContext.DrawingContext;
-                drawingContext.DrawRectangle(brush, new Pen(brush, ROIDesc.StrokeThickness), rect);
+                drawingContext.DrawRegularRectangle(brush, new Pen(brush, ROIDesc.StrokeThickness), rect);
             }
 
         }

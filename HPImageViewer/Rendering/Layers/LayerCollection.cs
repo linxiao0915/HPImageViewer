@@ -6,7 +6,7 @@ namespace HPImageViewer.Rendering.Layers
     {
         public List<ILayer> BackgroundLayers { get; set; } = new List<ILayer>()
         {
-            ////new GridBackgroundLayer(),
+            // new GridLayer(),
             //new CrossHairLayer(),
             //new ViewingInfoLayer(),
         };

@@ -27,5 +27,10 @@ namespace HPImageViewer.Utils
         {
             return new PolygonRender(polygonDesc);
         }
+
+        private static RotatedRectRender CreateROIRenderInternal(RotatedRectDesc polygonDesc)
+        {
+            return new RotatedRectRender(polygonDesc);
+        }
     }
 }

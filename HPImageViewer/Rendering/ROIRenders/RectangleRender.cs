@@ -10,19 +10,7 @@ namespace HPImageViewer.Rendering.ROIRenders
     internal class RectangleRender : ROIRender
     {
 
-        private RectangleDesc rectangleDesc
-        {
-            get => (RectangleDesc)ROIDesc;
-            set
-            {
-                if (ROIDesc != value)
-                {
-                    ROIDesc = value;
-                    OnPropertyChanged();
-                }
-
-            }
-        }
+        private RectangleDesc RectangleDesc => (RectangleDesc)ROIDesc;
 
         public RectangleRender() : this(new RectangleDesc())
         {
@@ -34,12 +22,12 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public double Left
         {
-            get => rectangleDesc.Left;
+            get => RectangleDesc.Left;
             set
             {
-                if (rectangleDesc.Left != value)
+                if (RectangleDesc.Left != value)
                 {
-                    rectangleDesc.Left = value;
+                    RectangleDesc.Left = value;
                     OnPropertyChanged();
                 }
 
@@ -48,12 +36,12 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public double Top
         {
-            get => rectangleDesc.Top;
+            get => RectangleDesc.Top;
             set
             {
-                if (rectangleDesc.Top != value)
+                if (RectangleDesc.Top != value)
                 {
-                    rectangleDesc.Top = value;
+                    RectangleDesc.Top = value;
                     OnPropertyChanged();
                 }
 
@@ -62,12 +50,12 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public double Width
         {
-            get => rectangleDesc.Width;
+            get => RectangleDesc.Width;
             set
             {
-                if (rectangleDesc.Width != value)
+                if (RectangleDesc.Width != value)
                 {
-                    rectangleDesc.Width = value;
+                    RectangleDesc.Width = value;
                     OnPropertyChanged();
                 }
 
@@ -76,19 +64,19 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public double Height
         {
-            get => rectangleDesc.Height;
+            get => RectangleDesc.Height;
             set
             {
-                if (rectangleDesc.Height != value)
+                if (RectangleDesc.Height != value)
                 {
-                    rectangleDesc.Height = value;
+                    RectangleDesc.Height = value;
                     OnPropertyChanged();
                 }
 
             }
         }
 
-        public Rect Rectangle => MathUtil.GetNormalizedRectangle(rectangleDesc.Left, rectangleDesc.Top, rectangleDesc.Left + rectangleDesc.Width, rectangleDesc.Top + rectangleDesc.Height);
+        public Rect Rectangle => MathUtil.GetNormalizedRectangle(RectangleDesc.Left, RectangleDesc.Top, RectangleDesc.Left + RectangleDesc.Width, RectangleDesc.Top + RectangleDesc.Height);
 
 
         protected override void OnROIRender(RenderContext renderContext)
@@ -105,7 +93,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             var width = Rectangle.Width * renderContext.Scale;
             var height = Rectangle.Height * renderContext.Scale;
 
-            renderContext.DrawingContext.DrawRectangle(fillBrush, new Pen(brush, rectangleDesc.StrokeThickness), new Rect(transformedPoint.X, transformedPoint.Y, width, height));
+            renderContext.DrawingContext.DrawRegularRectangle(fillBrush, new Pen(brush, RectangleDesc.StrokeThickness), new Rect(transformedPoint.X, transformedPoint.Y, width, height));
         }
 
         protected Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);
@@ -253,7 +241,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         protected override bool NeedRender(RenderContext renderContext)
         {
-            return NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRectangle, rectangleDesc);
+            return NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRectangle, RectangleDesc);
 
         }
 
