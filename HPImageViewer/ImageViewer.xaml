@@ -38,7 +38,8 @@
           FontFamily="Verdana"
           FontSize="16"
           Foreground="Yellow"
-          Text="Fps" />
+          Text="Fps"
+          Visibility="Collapsed" />
       </Grid>
     </Border>
     <local:ImageView

@@ -6,6 +6,7 @@ using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
 using OpenCvSharp;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -78,8 +79,6 @@ namespace HPImageViewer
             get; set;
 
         }
-
-
 
         public void Rerender(Rect? affectedArea = null, bool immediate = true)
         {
@@ -225,13 +224,7 @@ namespace HPImageViewer
         {
             //todo:线程安全
             _imageViewerDesc = imageViewerDesc;
-            if (ROIRenderCollection != null)
-            {
-                ROIRenderCollection.RoisChanged -= ROIRenderCollection_RoisChanged;
-            }
-            ROIRenderCollection = ROIRenderCollection.CreateByROIDescs(imageViewerDesc.ROIDescs, CoordTransform);
-            ROIRenderCollection.RoisChanged += ROIRenderCollection_RoisChanged;
-
+            UpdateROIs(imageViewerDesc.ROIDescs.ToArray());
             Rerender();
         }
 
@@ -249,6 +242,17 @@ namespace HPImageViewer
             this.RaiseEvent(new RoutedEventArgs(DocumentUpdatedEvent));
             Rerender();
 
+        }
+        public void UpdateROIs(params ROIDesc[] rois)
+        {
+            if (ROIRenderCollection != null)
+            {
+                ROIRenderCollection.RoisChanged -= ROIRenderCollection_RoisChanged;
+            }
+            _imageViewerDesc.ROIDescs = rois?.ToList() ?? new List<ROIDesc>();
+            ROIRenderCollection = ROIRenderCollection.CreateByROIDescs(_imageViewerDesc.ROIDescs, CoordTransform);
+            ROIRenderCollection.RoisChanged += ROIRenderCollection_RoisChanged;
+            Rerender();
         }
 
         private RenderContext GetRenderContext(DrawingContext drawingContext)

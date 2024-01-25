@@ -197,6 +197,11 @@ namespace HPImageViewer
             ImageViewDrawCanvas.AddROIs(rois);
         }
 
+        public void UpdateROIs(params ROIDesc[] rois)
+        {
+            ImageViewDrawCanvas.UpdateROIs(rois);
+        }
+
         public bool FitNewImageToArea
         {
             get => ImageViewDrawCanvas.FitNewImageToArea;
