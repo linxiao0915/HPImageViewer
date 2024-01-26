@@ -73,7 +73,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public override int HitTest(Point point)
         {
-            return 0;
+            return -1;
         }
 
         public override int HandleCount { get; }

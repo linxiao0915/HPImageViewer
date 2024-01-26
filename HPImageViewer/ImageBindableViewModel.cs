@@ -46,7 +46,7 @@ namespace HPImageViewer
             get => _rois;
             set
             {   //临时代码
-                _imageData = value;
+                _rois = value;
                 // var bitmap = _imageData.ToBitmap();
                 //  BitmapCache = bitmap;
                 ROIsChanged?.Invoke(this, value);
