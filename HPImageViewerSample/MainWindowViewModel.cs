@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HalconDotNet;
 using HPImageViewer.Core;
 using HPImageViewer.Core.Persistence;
 using Microsoft.Win32;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using Point = HPImageViewer.Core.Primitives.Point;
 
 namespace HPImageViewerSample
@@ -42,11 +42,14 @@ namespace HPImageViewerSample
 
                 try
                 {
-                    BitmapImage bitmap = new BitmapImage(new Uri(selectedFileName, UriKind.Relative));
-                    bitmap.Freeze();
+                    //BitmapImage bitmap = new BitmapImage(new Uri(selectedFileName, UriKind.Relative));
+                    //bitmap.Freeze();
+
                     //var image = Cv2.ImRead(selectedFileName);
+
+                    HOperatorSet.ReadImage(out var hImage, selectedFileName);
                     _imageViewer.FitNewImageToArea = true;
-                    _imageViewer.SetImage(bitmap);
+                    _imageViewer.SetImage(hImage);
 
                 }
                 catch (Exception ex)
