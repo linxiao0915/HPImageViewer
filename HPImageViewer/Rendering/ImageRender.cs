@@ -98,8 +98,7 @@ namespace HPImageViewer.Rendering
             }
 
             //绘制到设备的区域
-            var renderDeviceArea = deviceDrawingArea;
-            //绘制的Image像素区域
+            var renderDeviceArea = deviceDrawingArea; //绘制的Image像素区域
             var renderImagePixelArea = RenderTransform.ToDomain(renderDeviceArea);
 
             //绘制的Image像素区域
@@ -120,7 +119,7 @@ namespace HPImageViewer.Rendering
                 // 开始计时
                 stopwatch.Restart();
 #endif
-                Cv2.Resize(clippedMat, resizeMat, drawSize, 0, 0, InterpolationFlags.Area);
+                Cv2.Resize(clippedMat, resizeMat, drawSize, 0, 0, InterpolationFlags.Nearest);
 #if DEBUG
                 stopwatch.Stop();
                 Console.WriteLine($"resize,耗时:{stopwatch.Elapsed.TotalMilliseconds}");
