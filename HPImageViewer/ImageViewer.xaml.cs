@@ -1,6 +1,8 @@
-﻿using HPImageViewer.Core;
+﻿using HalconDotNet;
+using HPImageViewer.Core;
 using HPImageViewer.Core.Miscs;
 using HPImageViewer.Core.Persistence;
+using HPImageViewer.Miscs;
 using HPImageViewer.Tools;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -172,7 +174,14 @@ namespace HPImageViewer
             else if (image is Bitmap bitmap)
             {
                 value = bitmap.Width * bitmap.Height;
-                conversionItem = new ConversionItem(image) { MatConverter = obj => (obj as Bitmap).ToMat() };
+                conversionItem = new ConversionItem(image) { MatConverter = obj => ((Bitmap)((Bitmap)obj).Clone()).ToMat() };
+            }
+            else if (image is HObject hImage)
+            {
+                HOperatorSet.GetImageSize(hImage, out var width, out var height);
+                value = width * height;
+                conversionItem = new ConversionItem(image) { MatConverter = (obj) => (obj as HObject).ToWriteableBitmap().ToMat() };
+
             }
             else if (image is ConversionItem conversion)
             {
@@ -195,6 +204,11 @@ namespace HPImageViewer
         public void AddROIs(params ROIDesc[] rois)
         {
             ImageViewDrawCanvas.AddROIs(rois);
+        }
+
+        public void UpdateROIs(params ROIDesc[] rois)
+        {
+            ImageViewDrawCanvas.UpdateROIs(rois);
         }
 
         public bool FitNewImageToArea
@@ -292,4 +306,6 @@ namespace HPImageViewer
 
 
     }
+
+
 }

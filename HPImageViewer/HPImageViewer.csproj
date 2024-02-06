@@ -1,34 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="ROI\**" />
-    <EmbeddedResource Remove="ROI\**" />
-    <None Remove="ROI\**" />
-    <Page Remove="ROI\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="ROI\**" />
+		<EmbeddedResource Remove="ROI\**" />
+		<None Remove="ROI\**" />
+		<Page Remove="ROI\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UndoManager\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="UndoManager\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
-    <PackageReference Include="OpenCvSharp4" Version="4.8.0.20230708" />
-    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.8.0.20230708" />
-    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.8.0.20230708" />
-    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.8.0.20230708" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+		<PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
+		<PackageReference Include="OpenCvSharp4.Extensions" Version="4.7.0.20230115" />
+		<PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />
+		<PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.7.0.20230115" />
+		<PackageReference Include="HalconXL.Dependency.DoNet" Version="20.11.1" />
+	</ItemGroup>
 
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\HPImageViewer.Core\HPImageViewer.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\HPImageViewer.Core\HPImageViewer.Core.csproj" />
+	</ItemGroup>
 
 </Project>
