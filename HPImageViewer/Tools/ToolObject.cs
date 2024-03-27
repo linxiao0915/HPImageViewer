@@ -9,7 +9,7 @@ namespace HPImageViewer.Tools
 
 
         protected bool _isAdding = false;
-        private Cursor _Cursor;
+        //private Cursor _Cursor;
         /// <summary>
         /// Left mouse button is pressed
         /// </summary>
@@ -75,7 +75,7 @@ namespace HPImageViewer.Tools
                 drawingCanvas.ROIRenderCollection.Insert(0, roiRender);
                 drawingCanvas.ROIRenderCollection.AddingRoiRender = null;
 
-                RoutedEventArgs args = new RoutedEventArgs(ImageView.ShapeDrawCompletedEvent);
+                System.Windows.RoutedEventArgs args = new System.Windows.RoutedEventArgs(ImageView.ShapeDrawCompletedEvent);
                 drawingCanvas.RaiseEvent(args);
             }
         }

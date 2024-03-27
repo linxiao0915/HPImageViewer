@@ -6,7 +6,7 @@ namespace HPImageViewer.Utils
     internal class MathUtil
     {
 
-        public static Rect GetNormalizedRectangle(double x1, double y1, double x2, double y2)
+        public static Core.Primitives.Rect GetNormalizedRectangle(double x1, double y1, double x2, double y2)
         {
             if (x2 < x1)
             {
@@ -22,15 +22,15 @@ namespace HPImageViewer.Utils
                 y1 = tmp;
             }
 
-            return new Rect(x1, y1, x2 - x1, y2 - y1);
+            return new Core.Primitives.Rect(x1, y1, x2 - x1, y2 - y1);
         }
 
-        public static Rect GetNormalizedRectangle(Point p1, Point p2)
+        public static Core.Primitives.Rect GetNormalizedRectangle(Point p1, Point p2)
         {
             return GetNormalizedRectangle(p1.X, p1.Y, p2.X, p2.Y);
         }
 
-        public static Rect GetNormalizedRectangle(Rect r)
+        public static Core.Primitives.Rect GetNormalizedRectangle(Rect r)
         {
             return GetNormalizedRectangle(r.X, r.Y, r.X + r.Width, r.Y + r.Height);
         }
@@ -78,7 +78,7 @@ namespace HPImageViewer.Utils
             return distanceSquared <= radius * radius;
         }
 
-        public static bool IsPointInCircle(Point targetPoint, Point center, double radius)
+        public static bool IsPointInCircle(Core.Primitives.Point targetPoint, Core.Primitives.Point center, double radius)
         {
             var distance = Math.Sqrt(Math.Pow(targetPoint.X - center.X, 2) + Math.Pow(targetPoint.Y - center.Y, 2));
             return distance < radius;

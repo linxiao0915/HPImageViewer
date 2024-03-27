@@ -10,7 +10,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             drawingContext.DrawRegularRectangle(
             null,
                  new Pen(Brushes.White, ROIDesc.StrokeThickness),
-                 DeviceRectangle);
+                 DeviceRect);
 
             DashStyle dashStyle = new DashStyle();
             dashStyle.Dashes.Add(4);
@@ -22,7 +22,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             drawingContext.DrawRegularRectangle(
                 null,
                 dashedPen,
-                DeviceRectangle);
+                DeviceRect);
         }
 
     }

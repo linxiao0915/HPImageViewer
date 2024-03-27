@@ -4,7 +4,6 @@ using HPImageViewer.Rendering;
 using HPImageViewer.Rendering.Layers;
 using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
-using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using HPImageViewer.RoutedEventArgs;
 using Rect = System.Windows.Rect;
+using Size = HPImageViewer.Core.Primitives.Size;
 
 namespace HPImageViewer
 {
@@ -61,15 +62,34 @@ namespace HPImageViewer
         }
 
 
-        private void _renderEngine_RenderRequested(object? sender, ImageRender e)
+        public static readonly RoutedEvent ImageDoubleClickedEvent = EventManager.RegisterRoutedEvent(nameof(ImageDoubleClicked), RoutingStrategy.Bubble, typeof(EventHandler), typeof(ImageView));
+
+        public event EventHandler<ImageDoubleClickedRoutedEventArgs> ImageDoubleClicked
+        {
+            add { AddHandler(ImageDoubleClickedEvent, value); }
+            remove { RemoveHandler(ImageDoubleClickedEvent, value); }
+        }
+
+
+
+        private void _renderEngine_RenderRequested(object sender, RenderSet e)
         {
             Dispatcher.InvokeAsync(() =>
             {
-                ImageRender = e;
-                InvalidateVisual();
+                UpdateUI(e);
+
             }, DispatcherPriority.Send);
         }
-
+        private void UpdateUI(RenderSet renderSet)
+        {
+            ImageRender = renderSet.ImageRender;
+            ImageSize = ImageRender?.ImageSize ?? new Size(0, 0);
+            if (renderSet.RenderContext.FitNewImageToArea)
+            {
+                FitImageToArea();
+            }
+            InvalidateVisual();
+        }
         private readonly RenderEngine _renderEngine;
 
         public ROIRenderCollection ROIRenderCollection { get; private set; }
@@ -80,44 +100,42 @@ namespace HPImageViewer
 
         }
 
-        public void Rerender(Rect? affectedArea = null, bool immediate = true)
+        public void Rerender(bool immediate = true, RenderContext renderContext = null)
         {
             if (RenderSize.Height <= 0 || RenderSize.Width <= 0) return;
 
-            if (affectedArea.HasValue == false)
+
+
+            if (immediate)
             {
-                if (immediate)
+                if (CheckAccess())
                 {
-                    if (CheckAccess())
-                    {
-                        InvalidateVisual();
-                    }
-                    else
-                    {
-                        Dispatcher.BeginInvoke(InvalidateVisual);
-                    }
+                    InvalidateVisual();
                 }
-
-#if DEBUG
-                //// 创建 Stopwatch 实例
-                //var stopwatch = new Stopwatch();
-                //// 开始计时
-                //stopwatch.Restart();
-#endif
-                if (Image != null)//临时代码，由于目前只渲染image data
+                else
                 {
-                    var renderSession = new RenderSession(this, GetRenderContext(null));
-                    _renderEngine.PostRenderSession(renderSession);
+                    Dispatcher.BeginInvoke(InvalidateVisual);
                 }
-
-
-#if DEBUG
-                //stopwatch.Stop();
-                //Console.WriteLine($"启动RenderTask 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
-#endif
-                //GetRenderContext(null)
-                // InvalidateVisual();//full render
             }
+
+
+#if DEBUG
+            //// 创建 Stopwatch 实例
+            //var stopwatch = new Stopwatch();
+            //// 开始计时
+            //stopwatch.Restart();
+#endif
+            var renderSession = new RenderSession(this, renderContext ?? GetRenderContext(null));
+            _renderEngine.PostRenderSession(renderSession);
+
+
+#if DEBUG
+            //stopwatch.Stop();
+            //Console.WriteLine($"启动RenderTask 耗时:{stopwatch.Elapsed.TotalMilliseconds}");
+#endif
+            //GetRenderContext(null)
+            // InvalidateVisual();//full render
+
 
             //todo: mark render with dirty flag，partial rendering
         }
@@ -149,31 +167,32 @@ namespace HPImageViewer
             }
         }
 
-        private Mat _image;
-        public Mat Image
+        private object _image;
+        public object Image
         {
             get => _image;
             set => SetImage(value);
         }
 
-        private void SetImage(Mat image)
-        {
-            if (image == null) return;
-            _image = image;
-            if (FitNewImageToArea)
-            {
-                FitImageToArea();
-            }
 
-            Rerender(immediate: false);
+        private void SetImage(object image)
+        {
+            _image = image;
+            //ImageSize = new Size(pixel.ImageSize.Width, pixel.ImageSize.Height);//todo:放到session避免并发问题
+            var renderContext = GetRenderContext(null);
+            renderContext.FitNewImageToArea = FitNewImageToArea;
+            renderContext.Image = image;
+            Rerender(immediate: false, renderContext: renderContext);
         }
+
+        public Size ImageSize { get; private set; }
 
         public bool FitNewImageToArea { get; set; } = false;
         public void FitImageToArea()
         {
-            if (Image == null) return;
-            var imageWidth = Image.Width;
-            var imageHeight = Image.Height;
+            if (Image == null || ImageSize == null) return;
+            var imageWidth = ImageSize.Width;
+            var imageHeight = ImageSize.Height;
             var areaWidth = RenderSize.Width;
             var areaHeight = RenderSize.Height;
 
@@ -228,9 +247,9 @@ namespace HPImageViewer
             Rerender();
         }
 
-        private void ROIRenderCollection_RoisChanged(object? sender, EventArgs e)
+        private void ROIRenderCollection_RoisChanged(object sender, EventArgs e)
         {
-            this.RaiseEvent(new RoutedEventArgs(DocumentUpdatedEvent));
+            this.RaiseEvent(new System.Windows.RoutedEventArgs(DocumentUpdatedEvent));
         }
 
         public void AddROIs(params ROIDesc[] rois)
@@ -239,7 +258,7 @@ namespace HPImageViewer
             {
                 ROIRenderCollection.Add(roiDesc);
             }
-            this.RaiseEvent(new RoutedEventArgs(DocumentUpdatedEvent));
+            this.RaiseEvent(new System.Windows.RoutedEventArgs(DocumentUpdatedEvent));
             Rerender();
 
         }
@@ -259,6 +278,7 @@ namespace HPImageViewer
         {
             var renderContext = new RenderContext(new WPFDrawingContext(drawingContext)) { Scale = this.Scale, TransformMatrix = this.TransformMatrix, RenderSize = RenderSize };
             renderContext.Image = Image;
+            renderContext.ImageSize = ImageSize;
             return renderContext;
         }
 

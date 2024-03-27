@@ -1,8 +1,11 @@
 ﻿
+using System;
 using HPImageViewer.Core.Persistence;
 using HPImageViewer.Utils;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
 namespace HPImageViewer.Rendering.ROIRenders
 {
@@ -18,66 +21,86 @@ namespace HPImageViewer.Rendering.ROIRenders
         }
         public RectangleRender(RectangleDesc rectangleDesc) : base(rectangleDesc)
         {
+            UpdateFromDesc();
         }
-
+        private double _left;
         public double Left
         {
-            get => RectangleDesc.Left;
+            get => _left;
             set
             {
-                if (RectangleDesc.Left != value)
+                if (_left != value)
                 {
-                    RectangleDesc.Left = value;
+                    _left = value;
+                    UpdateToDesc();
                     OnPropertyChanged();
                 }
 
             }
         }
-
+        private double _top;
         public double Top
         {
-            get => RectangleDesc.Top;
+            get => _top;
             set
             {
-                if (RectangleDesc.Top != value)
+                if (_top != value)
                 {
-                    RectangleDesc.Top = value;
+                    _top = value;
+                    UpdateToDesc();
                     OnPropertyChanged();
                 }
 
             }
         }
-
+        private double _width;
         public double Width
         {
-            get => RectangleDesc.Width;
+            get => _width;
             set
             {
-                if (RectangleDesc.Width != value)
+                if (_width != value)
                 {
-                    RectangleDesc.Width = value;
+                    _width = value;
+                    UpdateToDesc();
                     OnPropertyChanged();
                 }
 
             }
         }
-
+        private double _height;
         public double Height
         {
-            get => RectangleDesc.Height;
+            get => _height;
             set
             {
-                if (RectangleDesc.Height != value)
+                if (_height != value)
                 {
-                    RectangleDesc.Height = value;
+                    _height = value;
+                    UpdateToDesc();
                     OnPropertyChanged();
                 }
 
             }
         }
+        private void UpdateToDesc()
+        {
+            RectangleDesc.Left = Rect.Left;
+            RectangleDesc.Top = Rect.Top;
+            RectangleDesc.Width = Rect.Width;
+            RectangleDesc.Height = Rect.Height;
+        }
+        private void UpdateFromDesc()
+        {
+            _left = RectangleDesc.Left;
+            _top = RectangleDesc.Top;
+            _width = RectangleDesc.Width;
+            _height = RectangleDesc.Height;
+        }
 
-        public Rect Rectangle => MathUtil.GetNormalizedRectangle(RectangleDesc.Left, RectangleDesc.Top, RectangleDesc.Left + RectangleDesc.Width, RectangleDesc.Top + RectangleDesc.Height);
+        public Core.Primitives.Rect Rect => MathUtil.GetNormalizedRectangle(Left, Top, Left + Width, Top + Height);
 
+        public virtual Core.Primitives.Rect Bound => this.Rect;
 
         protected override void OnROIRender(RenderContext renderContext)
         {
@@ -88,18 +111,21 @@ namespace HPImageViewer.Rendering.ROIRenders
             {
                 fillBrush.Freeze();
             }
-            var originalPoint = new Point(Rectangle.X, Rectangle.Y);
+            var originalPoint = new Core.Primitives.Point(Rect.X, Rect.Y);
             var transformedPoint = RenderTransform.ToDevice(originalPoint);
-            var width = Rectangle.Width * renderContext.Scale;
-            var height = Rectangle.Height * renderContext.Scale;
+            var width = Rect.Width * renderContext.Scale;
+            var height = Rect.Height * renderContext.Scale;
 
-            renderContext.DrawingContext.DrawRegularRectangle(fillBrush, new Pen(brush, RectangleDesc.StrokeThickness), new Rect(transformedPoint.X, transformedPoint.Y, width, height));
+            renderContext.DrawingContext.DrawRegularRectangle(fillBrush, new Pen(brush, RectangleDesc.StrokeThickness), new Core.Primitives.Rect(transformedPoint.X, transformedPoint.Y, width, height));
         }
 
-        protected Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);
+        protected Core.Primitives.Rect DeviceRect => RenderTransform.ToDevice(Rect);
+
+        protected Core.Primitives.Rect DeviceBound => RenderTransform.ToDevice(Bound);
 
         public override int HitTest(Point point)
         {
+            UpdateFromDesc();
             if (IsSelected)
             {
                 for (int i = 1; i <= HandleCount; i++)
@@ -117,7 +143,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         protected bool PointInObject(Point devicePoint)
         {
-            return DeviceRectangle.Contains(devicePoint);
+            return DeviceBound.Contains(devicePoint.ToPoint());
         }
 
         /// <summary>
@@ -127,10 +153,10 @@ namespace HPImageViewer.Rendering.ROIRenders
         /// <returns></returns>
         public override Point GetHandle(int handleNumber)
         {
-            return RenderTransform.ToDevice(GetRectHandle(Rectangle, handleNumber));
+            return RenderTransform.ToDevice(GetRectHandle(Rect, handleNumber)).ToWindowPoint();
         }
 
-        internal static Point GetRectHandle(Rect rectangle, int handleNumber)
+        internal static Core.Primitives.Point GetRectHandle(Core.Primitives.Rect rectangle, int handleNumber, bool includeCenterPoint = true)
         {
             double x, y, xCenter, yCenter;
             xCenter = rectangle.X + rectangle.Width / 2;
@@ -138,6 +164,11 @@ namespace HPImageViewer.Rendering.ROIRenders
             x = rectangle.X;
             y = rectangle.Y;
 
+            if (includeCenterPoint == false)
+            {
+                handleNumber = (handleNumber - 1) * 2 + 1;
+            }
+
             switch (handleNumber)
             {
                 case 1:
@@ -173,21 +204,34 @@ namespace HPImageViewer.Rendering.ROIRenders
                     y = yCenter;
                     break;
             }
-            return new Point(x, y);
+            return new Core.Primitives.Point(x, y);
         }
 
         public override int HandleCount => 8;
 
-        protected override void MoveHandleToInteranl(int handleNumber, Point point)
+        protected override void MoveHandleToInternal(int handleNumber, Point point)
+        {
+
+            var rect = MoveRectangle(handleNumber, point, Left, Top, Width, Height);
+            Left = rect.l;
+            Top = rect.t;
+            Width = rect.w;
+            Height = rect.h;
+        }
+        protected static (double l, double t, double w, double h) MoveRectangle(int handleNumber, Point point, double left, double top, double width, double height, bool includeCenterPoint = true)
         {
             var x = point.X;
             var y = point.Y;
 
-            var left = Left;
-            var top = Top;
-            var right = Left + Width;
-            var bottom = Top + Height;
+            //var left = rect.Left;
+            //var top = rect.Top;
+            var right = left + width;
+            var bottom = top + height;
 
+            if (includeCenterPoint == false)
+            {
+                handleNumber = (handleNumber - 1) * 2 + 1;
+            }
             switch (handleNumber)
             {
                 case 1:
@@ -220,10 +264,9 @@ namespace HPImageViewer.Rendering.ROIRenders
                     break;
             }
 
-            Left = left;
-            Top = top;
-            Width = right - left;
-            Height = bottom - top;
+            width = right - left;
+            height = bottom - top;
+            return (left, top, width, height);
         }
 
         /// <summary>
@@ -241,7 +284,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         protected override bool NeedRender(RenderContext renderContext)
         {
-            return NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRectangle, RectangleDesc);
+            return NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRect.ToWindowRect(), RectangleDesc);
 
         }
 
@@ -264,7 +307,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         internal override bool IntersectsWith(Rect rect)
         {
-            return Rectangle.IntersectsWith(rect);
+            return Rect.IntersectsWith(rect.ToRect());
         }
     }
 }

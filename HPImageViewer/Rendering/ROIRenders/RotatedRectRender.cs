@@ -24,7 +24,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                 }
             }
         }
-        public Rect Rectangle => MathUtil.GetNormalizedRectangle(RotatedRectDesc.CenterX - RotatedRectDesc.Width / 2, RotatedRectDesc.CenterY - RotatedRectDesc.Height / 2, RotatedRectDesc.CenterX + RotatedRectDesc.Width / 2, RotatedRectDesc.CenterY + RotatedRectDesc.Height / 2);
+        public Core.Primitives.Rect Rectangle => MathUtil.GetNormalizedRectangle(RotatedRectDesc.CenterX - RotatedRectDesc.Width / 2, RotatedRectDesc.CenterY - RotatedRectDesc.Height / 2, RotatedRectDesc.CenterX + RotatedRectDesc.Width / 2, RotatedRectDesc.CenterY + RotatedRectDesc.Height / 2);
         protected override void OnROIRender(RenderContext renderContext)
         {
             var brush = Brush;
@@ -35,7 +35,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                 fillBrush.Freeze();
             }
             var centerPoint = new Point(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
-            var transformedCenterPoint = RenderTransform.ToDevice(centerPoint);
+            var transformedCenterPoint = RenderTransform.ToDevice(centerPoint.ToPoint());
 
 
             //var width = Rectangle.Width * renderContext.Scale;
@@ -51,7 +51,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
             var pen = new Pen(brush, RotatedRectDesc.StrokeThickness);
             pen.Freeze();
-            var transformRect = new Rect(transformedCenterPoint.X - transformedWidth / 2, transformedCenterPoint.Y - transformedHeight / 2, transformedWidth, transformedHeight);
+            var transformRect = new Core.Primitives.Rect(transformedCenterPoint.X - transformedWidth / 2, transformedCenterPoint.Y - transformedHeight / 2, transformedWidth, transformedHeight);
             renderContext.DrawingContext.DrawRectangle(fillBrush, pen, transformRect, Angle);
             var arrowPoints = new List<Core.Primitives.Point>();
             arrowPoints.Add(new Core.Primitives.Point(transformRect.Right, transformRect.Top + transformRect.Height / 2));
@@ -62,7 +62,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             matrix = Matrix.Identity;
             matrix.RotateAt(-Angle, transformedCenterPoint.X, transformedCenterPoint.Y);
             t = new RenderTransform(matrix);
-            arrowPoints = arrowPoints.Select(s => t.ToDevice(s.ToWindowPoint()).ToPoint()).ToList();
+            arrowPoints = arrowPoints.Select(s => t.ToDevice(s)).ToList();
             renderContext.DrawingContext.DrawLine(pen, arrowPoints[0], arrowPoints[1]);
             renderContext.DrawingContext.DrawLine(pen, arrowPoints[1], arrowPoints[2]);
             renderContext.DrawingContext.DrawLine(pen, arrowPoints[1], arrowPoints[3]);

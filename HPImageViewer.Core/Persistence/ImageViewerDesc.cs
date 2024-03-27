@@ -1,4 +1,7 @@
-﻿namespace HPImageViewer.Core.Persistence
+﻿using System;
+using System.Collections.Generic;
+
+namespace HPImageViewer.Core.Persistence
 {
     [Serializable]
     public class ImageViewerDesc

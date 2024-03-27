@@ -14,7 +14,7 @@ namespace HPImageViewer.Rendering.Layers
             {
                 //new GridBackgroundLayer(),
                 new CrossHairLayer(),
-                new ViewingInfoLayer(),
+               // new ViewingInfoLayer(),
             };
 
         public LayerCollection()

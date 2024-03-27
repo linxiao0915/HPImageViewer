@@ -14,10 +14,10 @@ namespace HPImageViewer
         /// <summary>
         /// The optional action to invoke when <see cref="CanExecute"/> is used.
         /// </summary>
-        private readonly Func<bool>? canExecute;
+        private readonly Func<bool> canExecute;
 
         /// <inheritdoc/>
-        public event EventHandler? CanExecuteChanged;
+        public event EventHandler CanExecuteChanged;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RelayCommand"/> class that can always execute.
@@ -26,7 +26,7 @@ namespace HPImageViewer
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
         public ImageViewerCommand(Action execute)
         {
-            ArgumentNullException.ThrowIfNull(execute);
+            //ArgumentNullException.ThrowIfNull(execute);
 
             this.execute = execute;
         }
@@ -39,8 +39,8 @@ namespace HPImageViewer
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
         public ImageViewerCommand(Action execute, Func<bool> canExecute)
         {
-            ArgumentNullException.ThrowIfNull(execute);
-            ArgumentNullException.ThrowIfNull(canExecute);
+            //ArgumentNullException.ThrowIfNull(execute);
+            //ArgumentNullException.ThrowIfNull(canExecute);
 
             this.execute = execute;
             this.canExecute = canExecute;
@@ -54,13 +54,13 @@ namespace HPImageViewer
 
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool CanExecute(object? parameter)
+        public bool CanExecute(object parameter)
         {
             return this.canExecute?.Invoke() != false;
         }
 
         /// <inheritdoc/>
-        public void Execute(object? parameter)
+        public void Execute(object parameter)
         {
             this.execute();
         }

@@ -1,22 +1,14 @@
-﻿using HalconDotNet;
-using HPImageViewer.Core;
+﻿using HPImageViewer.Core;
 using HPImageViewer.Core.Miscs;
 using HPImageViewer.Core.Persistence;
-using HPImageViewer.Miscs;
 using HPImageViewer.Tools;
-using OpenCvSharp;
-using OpenCvSharp.Extensions;
-using OpenCvSharp.WpfExtensions;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace HPImageViewer
 {
@@ -37,12 +29,14 @@ namespace HPImageViewer
         }
 
 
-        private void ImageViewDrawCanvas_DocumentUpdated(object? sender, EventArgs e)
+        private void ImageViewDrawCanvas_DocumentUpdated(object sender, EventArgs e)
         {
             DocumentUpdated?.Invoke(this, e);
         }
         public event EventHandler ShapeDrawCompleted;
-        private void ImageViewDrawCanvas_ShapeDrawCompleted(object? sender, EventArgs e)
+
+
+        private void ImageViewDrawCanvas_ShapeDrawCompleted(object sender, EventArgs e)
         {
             ShapeDrawCompleted?.Invoke(sender, e);
         }
@@ -69,7 +63,7 @@ namespace HPImageViewer
         private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
         private double _lastTime = 0.0d;
         private double _lowestFrameTime = double.MaxValue;
-        private void CompositionTarget_Rendering(object? sender, EventArgs e)
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             var timeNow = _stopwatch.ElapsedTicks;
             var elapsedMilliseconds = timeNow - _lastTime;
@@ -81,8 +75,6 @@ namespace HPImageViewer
         {
             ActivatedTool = ToolType.ToolPan;
             InitializeCommands();
-
-            ConstructConversionTransformBlock();
 
         }
 
@@ -151,54 +143,33 @@ namespace HPImageViewer
             set => ImageViewDrawCanvas.ImageViewerDesc = value;
         }
 
-        public event EventHandler? DocumentUpdated;
+        public event EventHandler DocumentUpdated;
 
 
         DataTrafficLimiter _dataTrafficLimiter = new(100, 512 * 512 * 5);
-        public void SetImage(object image)
+        public void SetImage(object Image)
         {
             //todo:此处加时间戳,并发下也有不严谨的，但是精确度不需要那么高，暂不考虑了；
-            var value = 0;
-            ConversionItem conversionItem = null;
-            if (image is Mat matImage)
-            {
-                value = matImage.Width * matImage.Height;
 
-                conversionItem = new ConversionItem(image) { MatConverter = (obj) => obj as Mat };
-            }
-            else if (image is BitmapImage bitmapImage)
-            {
-                value = (int)(bitmapImage.Width * bitmapImage.Height);
-                conversionItem = new ConversionItem(image) { MatConverter = obj => new WriteableBitmap(obj as BitmapImage).ToMat() };
-            }
-            else if (image is Bitmap bitmap)
-            {
-                value = bitmap.Width * bitmap.Height;
-                conversionItem = new ConversionItem(image) { MatConverter = obj => ((Bitmap)((Bitmap)obj).Clone()).ToMat() };
-            }
-            else if (image is HObject hImage)
-            {
-                HOperatorSet.GetImageSize(hImage, out var width, out var height);
-                value = width * height;
-                conversionItem = new ConversionItem(image) { MatConverter = (obj) => (obj as HObject).ToWriteableBitmap().ToMat() };
+            //else if (image is BitmapImage bitmapImage)
+            //{
+            //    value = (int)(bitmapImage.Width * bitmapImage.Height);
+            //    conversionItem = new ConversionItem(image); /*{ MatConverter = obj => new WriteableBitmap(obj as BitmapImage).ToMat() };*/
+            //}
+            //else if (image is Bitmap bitmap)
+            //{
+            //    value = bitmap.Width * bitmap.Height;
+            //    conversionItem = new ConversionItem(image) { MatConverter = obj => ((Bitmap)((Bitmap)obj).Clone()).ToMat() };
+            //}
 
-            }
-            else if (image is ConversionItem conversion)
-            {
-                conversionItem = conversion;
-            }
+            this.ImageViewDrawCanvas.Image = Image;
             //todo:可能存在一个bug，最后一帧得不到显示，因为可能超过流量，need improvement
-            if (_dataTrafficLimiter.TryAdd(value))
-            {
-                if (conversionItem != null)
-                {
-                    conversionItem.TimestampTick = _stopwatch.ElapsedTicks;
-                }
+        }
 
-                _imageConversionActionBlock.Post(conversionItem);
-            }
-
-
+        public object Image
+        {
+            get => this.ImageViewDrawCanvas.Image;
+            set => this.ImageViewDrawCanvas.Image = value;
         }
 
         public void AddROIs(params ROIDesc[] rois)
@@ -268,41 +239,7 @@ namespace HPImageViewer
         public ICommand MoveToFrontCommand { get; private set; }
         public ICommand MoveToBackCommand { get; private set; }
 
-        private ActionBlock<ConversionItem> _imageConversionActionBlock;
-
-        private long _currentOutputTimestampTick = 0;
         private readonly object _syncLock = new object();
-        private void ConstructConversionTransformBlock()
-        {
-            var executionDataflowBlockOptions = new ExecutionDataflowBlockOptions();
-            executionDataflowBlockOptions.EnsureOrdered = true;
-            executionDataflowBlockOptions.MaxDegreeOfParallelism = -1;
-            executionDataflowBlockOptions.BoundedCapacity = -1;
-
-            _imageConversionActionBlock = new ActionBlock<ConversionItem>(item =>
-            {
-
-                Mat mat = null;
-                if (item?.MatConverter != null)
-                {
-                    var image = item.Image;
-                    mat = item.MatConverter(image);
-                }
-
-                lock (_syncLock)
-                {
-                    if (item?.TimestampTick > _currentOutputTimestampTick)
-                    {
-                        _currentOutputTimestampTick = item.TimestampTick;
-                    }
-                }
-
-                ImageViewDrawCanvas.Image = mat;
-
-
-            }, executionDataflowBlockOptions);
-
-        }
 
 
     }

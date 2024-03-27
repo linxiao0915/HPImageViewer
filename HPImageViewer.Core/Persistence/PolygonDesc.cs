@@ -1,4 +1,5 @@
-﻿using HPImageViewer.Core.Primitives;
+﻿using System.Collections.Generic;
+using HPImageViewer.Core.Primitives;
 
 namespace HPImageViewer.Core.Persistence
 {

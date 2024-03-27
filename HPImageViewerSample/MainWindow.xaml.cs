@@ -24,9 +24,9 @@ namespace HPImageViewerSample
         //    Console.WriteLine($"文档更新+{DateTime.Now}");
         //}
 
-        private Stopwatch _stopwatch = Stopwatch.StartNew();
-        private double _lastTime;
-        private double _lowestFrameTime;
+        //private Stopwatch _stopwatch = Stopwatch.StartNew();
+        //private double _lastTime;
+        //private double _lowestFrameTime;
         //private void CompositionTarget_Rendering(object? sender, EventArgs e)
         //{
         //    var timeNow = _stopwatch.ElapsedMilliseconds;

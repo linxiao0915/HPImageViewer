@@ -1,6 +1,5 @@
 ﻿using HPImageViewer.Utils;
 using System;
-using System.Windows;
 using System.Windows.Media;
 
 namespace HPImageViewer.Rendering.Layers
@@ -42,7 +41,7 @@ namespace HPImageViewer.Rendering.Layers
             var drawingContext = renderContext.DrawingContext;
             if (deviceVerticalInternal < 10 || deviceHorizontalInternal < 10 || deviceHorizontalInternal > renderWidth || deviceVerticalInternal > renderHeight)
             {
-                drawingContext.DrawRegularRectangle(_DarkPen.Brush, _DarkPen, new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height));
+                drawingContext.DrawRegularRectangle(_DarkPen.Brush, _DarkPen, new HPImageViewer.Core.Primitives.Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height));
                 return;
             }
 
@@ -82,7 +81,7 @@ namespace HPImageViewer.Rendering.Layers
                 do
                 {
                     var pen2 = xIndex++ % 2 == 0 ? pen : pen == _LightPen ? _DarkPen : _LightPen;
-                    var rect = new Rect(xPosition, yPosition, (int)deviceHorizontalInternal + 1, (int)deviceVerticalInternal + 1);
+                    var rect = new HPImageViewer.Core.Primitives.Rect(xPosition, yPosition, (int)deviceHorizontalInternal + 1, (int)deviceVerticalInternal + 1);
 
 
 

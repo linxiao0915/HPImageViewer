@@ -1,4 +1,5 @@
 ﻿using HPImageViewer.Core.Persistence;
+using HPImageViewer.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -36,7 +37,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                 if (_fillBrush == null)
                 {
                     _fillBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Color));
-                    _fillBrush.Opacity = 0.1;
+                    _fillBrush.Opacity = 0.2;
                 }
                 return _fillBrush;
             }
@@ -82,7 +83,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             {
                 var rect = GetHandlePoint(i);
                 var drawingContext = renderContext.DrawingContext;
-                drawingContext.DrawRegularRectangle(brush, new Pen(brush, ROIDesc.StrokeThickness), rect);
+                drawingContext.DrawRegularRectangle(brush, new Pen(brush, ROIDesc.StrokeThickness), rect.ToRect());
             }
 
         }
@@ -91,11 +92,11 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public void MoveHandleTo(int handleNumber, Point point)
         {
-            var p = RenderTransform.ToDomain(point);
-            MoveHandleToInteranl(handleNumber, p);
+            var p = RenderTransform.ToDomain(point.ToPoint());
+            MoveHandleToInternal(handleNumber, p.ToWindowPoint());
         }
 
-        protected virtual void MoveHandleToInteranl(int handleNumber, Point point)
+        protected virtual void MoveHandleToInternal(int handleNumber, Point point)
         {
 
         }
@@ -136,9 +137,9 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         #region INotifyPropertyChanged's Implementation
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

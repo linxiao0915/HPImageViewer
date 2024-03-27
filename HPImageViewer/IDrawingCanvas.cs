@@ -1,11 +1,9 @@
 ﻿using HPImageViewer.Rendering;
 using HPImageViewer.Rendering.ROIRenders;
 using HPImageViewer.Utils;
-using OpenCvSharp;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Rect = System.Windows.Rect;
 using Size = System.Windows.Size;
 
 namespace HPImageViewer
@@ -14,7 +12,7 @@ namespace HPImageViewer
     {
         ROIRenderCollection ROIRenderCollection { get; }
         ImageRender ImageRender { get; set; }
-        void Rerender(Rect? affectedArea = null, bool immediate = true);
+        void Rerender(bool immediate = true, RenderContext renderContext = null);
         Cursor Cursor { get; set; }
         double Scale { get; }
         Matrix TransformMatrix { get; }
@@ -22,7 +20,7 @@ namespace HPImageViewer
         void PanTo(double deltaX, double deltaY);
         ICoordTransform CoordTransform { get; }
         Size RenderSize { get; set; }
-        Mat Image { get; set; }
+        object Image { get; set; }
         bool FitNewImageToArea { get; set; }
         void FitImageToArea();
 

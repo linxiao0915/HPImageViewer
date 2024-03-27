@@ -27,17 +27,17 @@ internal class RenderTransform : ICoordTransform
     //    dx = point.X; dy = point.Y;
     //}
 
-    public Point ToDomain(Point devicePoint)
+    public HPImageViewer.Core.Primitives.Point ToDomain(HPImageViewer.Core.Primitives.Point devicePoint)
     {
         var matrix = Matrix;
         matrix.Invert();
-        return matrix.Transform(devicePoint);
+        return matrix.Transform(devicePoint.ToWindowPoint()).ToPoint();
     }
 
-    public Point ToDevice(Point worldPoint)
+    public HPImageViewer.Core.Primitives.Point ToDevice(HPImageViewer.Core.Primitives.Point worldPoint)
     {
         var matrix = Matrix;
-        return matrix.Transform(worldPoint);
+        return matrix.Transform(worldPoint.ToWindowPoint()).ToPoint();
     }
 
     public Vector ToDomain(Vector deviceVector)

@@ -1,5 +1,5 @@
 ﻿using HPImageViewer.Core.Persistence;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,14 +13,18 @@ namespace HPImageViewer
         public ImageBindableViewer()
         {
             InitializeComponent();
-            this.DataContextChanged += StageControlImageView_DataContextChanged;
+            if (DesignerProperties.GetIsInDesignMode(this) == false)
+            {
+                this.DataContextChanged += StageControlImageView_DataContextChanged;
+            }
+
         }
 
         ImageBindableViewModel ViewModel => DataContext as ImageBindableViewModel;
 
 
 
-        private void StageControlImageViewModel_ImageChanged(object? sender, object e)
+        private void StageControlImageViewModel_ImageChanged(object sender, object e)
         {
             UpdateImage(e);
 
@@ -67,7 +71,7 @@ namespace HPImageViewer
 
         }
 
-        private void ViewModel_ROIsChanged(object? sender, List<ROIDesc> e)
+        private void ViewModel_ROIsChanged(object sender, List<ROIDesc> e)
         {
             UpdateROIs(e);
         }
@@ -75,8 +79,7 @@ namespace HPImageViewer
         private void UpdateImage(object imageData)
         {
             if (imageData == null) return;
-            var cache = imageData;//.ToBitmap();//临时代码，后续转换做到控件中
-            ImageViewer.SetImage(cache);
+            ImageViewer.SetImage(imageData);
         }
         private void UpdateROIs(List<ROIDesc> rois)
         {

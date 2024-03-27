@@ -74,16 +74,16 @@ namespace HPImageViewer.Rendering.ROIRenders
             }
         }
 
-        public Rect Rectangle => new Rect(CenterX - Math.Abs(R), CenterY - Math.Abs(R), 2 * Math.Abs(R), 2 * Math.Abs(R));
-        private Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);
+        public HPImageViewer.Core.Primitives.Rect Rectangle => new HPImageViewer.Core.Primitives.Rect(CenterX - Math.Abs(R), CenterY - Math.Abs(R), 2 * Math.Abs(R), 2 * Math.Abs(R));
+        private HPImageViewer.Core.Primitives.Rect DeviceRectangle => RenderTransform.ToDevice(Rectangle);
         protected bool PointInObject(Point devicePoint)
         {
-            return DeviceRectangle.Contains(devicePoint);
+            return DeviceRectangle.Contains(devicePoint.ToPoint());
         }
 
         public override int HitTest(Point point)
         {
-            if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R - ROIDesc.StrokeThickness / 2))
+            if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point.ToPoint()), new Core.Primitives.Point(CenterX, CenterY), R - ROIDesc.StrokeThickness / 2))
             {
                 return 0;
             }
@@ -91,7 +91,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             if (IsSelected)
             {
 
-                if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point), new Point(CenterX, CenterY), R + ROIDesc.StrokeThickness / 2))
+                if (MathUtil.IsPointInCircle(RenderTransform.ToDomain(point.ToPoint()), new Core.Primitives.Point(CenterX, CenterY), R + ROIDesc.StrokeThickness / 2))
                 {
                     return 1;
                 }
@@ -132,7 +132,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                     y = yCenter;
                     break;
             }
-            return RenderTransform.ToDevice(new Point(x, y));
+            return RenderTransform.ToDevice(new Point(x, y).ToPoint()).ToWindowPoint();
         }
 
         public override int HandleCount => 4;
@@ -145,7 +145,7 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         protected override bool NeedRender(RenderContext renderContext)
         {
-            return RectangleRender.NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), DeviceRectangle, EllipseDesc);
+            return RectangleRender.NeedRender(new Rect(0, 0, renderContext.RenderSize.Width, renderContext.RenderSize.Height), new Rect(DeviceRectangle.X, DeviceRectangle.Y, DeviceRectangle.Width, DeviceRectangle.Height), EllipseDesc);
         }
 
         protected override void OnROIRender(RenderContext renderContext)
@@ -162,12 +162,12 @@ namespace HPImageViewer.Rendering.ROIRenders
 
 
             var center = new Point(CenterX, CenterY);
-            var transformedCenter = RenderTransform.ToDevice(center);
+            var transformedCenter = RenderTransform.ToDevice(center.ToPoint());
 
-            renderContext.DrawingContext.DrawEllipse(fillBrush, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter.ToPoint(), R * renderContext.Scale, R * renderContext.Scale);
+            renderContext.DrawingContext.DrawEllipse(fillBrush, new Pen(Brush, this.ROIDesc.StrokeThickness), transformedCenter, R * renderContext.Scale, R * renderContext.Scale);
         }
 
-        protected override void MoveHandleToInteranl(int handleNumber, Point point)
+        protected override void MoveHandleToInternal(int handleNumber, Point point)
         {
             var x = point.X;
             var y = point.Y;

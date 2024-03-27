@@ -1,4 +1,5 @@
 ﻿using HPImageViewer.Rendering.ROIRenders;
+using HPImageViewer.Utils;
 using System.Windows.Input;
 
 namespace HPImageViewer.Tools
@@ -14,7 +15,7 @@ namespace HPImageViewer.Tools
         {
             var center = e.GetPosition(drawingCanvas);
 
-            var transformedCenter = drawingCanvas.CoordTransform.ToDomain(center);
+            var transformedCenter = drawingCanvas.CoordTransform.ToDomain(center.ToPoint());
 
             var rectangleRender = new EllipseRender() { CenterX = transformedCenter.X, CenterY = transformedCenter.Y, R = 1d / drawingCanvas.Scale };
             PrepareNewObject(drawingCanvas, rectangleRender);

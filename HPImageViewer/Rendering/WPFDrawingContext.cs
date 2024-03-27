@@ -14,20 +14,21 @@ namespace HPImageViewer.Rendering
         {
             _drawingContext = drawingContext;
         }
-        public void DrawRectangle(Brush brush, Pen pen, Rect rectangle, double angle)
+        public void DrawRectangle(Brush brush, Pen pen, HPImageViewer.Core.Primitives.Rect rectangle, double angle)
         {
             if (angle == 0)
             {
-                _drawingContext.DrawRectangle(brush, pen, rectangle);
+                _drawingContext.DrawRectangle(brush, pen, new Rect(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
             }
             else
             {
-                var rect = new RectangleGeometry() { Rect = rectangle, Transform = new RotateTransform(-angle, rectangle.X + rectangle.Width / 2, rectangle.Y + rectangle.Height / 2) };
+                var rect = new RectangleGeometry() { Rect = new Rect(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height), Transform = new RotateTransform(-angle, rectangle.X + rectangle.Width / 2, rectangle.Y + rectangle.Height / 2) };
 
                 _drawingContext.DrawGeometry(brush, pen, rect);
             }
 
         }
+
 
         public void DrawEllipse(Brush brush, Pen pen, Point center, double radiusX, double radiusY)
         {
@@ -61,9 +62,10 @@ namespace HPImageViewer.Rendering
             _drawingContext.DrawText(formattedText, point.ToWindowPoint());
 
         }
-        public void DrawImage(ImageSource imageSource, Rect rectangle)
+        public void DrawImage(ImageSource imageSource, HPImageViewer.Core.Primitives.Rect rectangle)
         {
-            _drawingContext.DrawImage(imageSource, rectangle);
+            _drawingContext.DrawImage(imageSource, new Rect(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
+
         }
 
     }

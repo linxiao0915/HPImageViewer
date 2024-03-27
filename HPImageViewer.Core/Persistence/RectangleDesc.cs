@@ -1,4 +1,6 @@
-﻿namespace HPImageViewer.Core.Persistence
+﻿using System;
+
+namespace HPImageViewer.Core.Persistence
 {
     [Serializable]
     public class RectangleDesc : ROIDesc

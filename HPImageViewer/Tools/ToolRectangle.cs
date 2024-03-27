@@ -1,4 +1,5 @@
 ﻿using HPImageViewer.Rendering.ROIRenders;
+using HPImageViewer.Utils;
 using System.Windows.Input;
 
 namespace HPImageViewer.Tools
@@ -14,7 +15,7 @@ namespace HPImageViewer.Tools
         public override void OnMouseDown(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
         {
             var leftTop = e.GetPosition(drawingCanvas);
-            var transformedLeftTop = drawingCanvas.CoordTransform.ToDomain(leftTop);
+            var transformedLeftTop = drawingCanvas.CoordTransform.ToDomain(leftTop.ToPoint());
             var rectangleRender = new RectangleRender() { Left = transformedLeftTop.X, Top = transformedLeftTop.Y, Width = 1d / drawingCanvas.Scale, Height = 1d / drawingCanvas.Scale };
             PrepareNewObject(drawingCanvas, rectangleRender);
 

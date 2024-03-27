@@ -1,10 +1,13 @@
-﻿using HPImageViewer.Core.Persistence;
+﻿using System;
+using HPImageViewer.Core.Persistence;
 
 namespace HPImageViewer.Core
 {
     public interface IHPImageViewer : IDocument
     {
-        public void SetImage(object image);
+        [Obsolete("请使用Image属性")]
+        public void SetImage(object Image);
+        public object Image { get; set; }
 
         public void AddROIs(params ROIDesc[] rois);
         public void UpdateROIs(params ROIDesc[] rois);
@@ -16,5 +19,6 @@ namespace HPImageViewer.Core
         public ToolType ActivatedTool { get; set; }
 
         event EventHandler ShapeDrawCompleted;
+
     }
 }

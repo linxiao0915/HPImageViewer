@@ -20,7 +20,13 @@ namespace HPImageViewer.Rendering
             set;
         }
 
-        public OpenCvSharp.Mat Image { get; set; }
+        public object Image { get; set; }
+
+
+        public HPImageViewer.Core.Primitives.Size ImageSize
+        {
+            get; set;
+        }
 
         public IDrawingContext DrawingContext { get; private set; }
 
@@ -39,6 +45,7 @@ namespace HPImageViewer.Rendering
 
         public Size RenderSize { get; set; }
 
+        internal bool FitNewImageToArea { get; set; } = false;
 
         //todo:transformer 构造，管理处理变换。
         //todo:元素Merge 批量绘制性能优化,不在区域不进行绘制

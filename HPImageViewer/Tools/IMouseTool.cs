@@ -2,8 +2,10 @@
 
 namespace HPImageViewer.Tools
 {
-    internal interface IMouseWheelTool
+    internal interface IMouseTool
     {
         void OnMouseWheel(IDrawingCanvas drawingCanvas, MouseWheelEventArgs e);
+        void OnMouseDoubleClick(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e);
+
     }
 }

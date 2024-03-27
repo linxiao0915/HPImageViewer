@@ -9,27 +9,33 @@ namespace HPImageViewer.Rendering
         private readonly ActionBlock<RenderDataItem> _renderDataSessionTransformBlock;
 
         private long _currentRenderSessionTimestampTick = 0;
-        public event EventHandler<ImageRender> RenderRequested;
+        public event EventHandler<RenderSet> RenderRequested;
         private readonly object _syncLock = new object();
+        private DateTime _lastTick = DateTime.MinValue;
         public RenderEngine()
         {
             var executionDataflowBlockOptions = new ExecutionDataflowBlockOptions();
             executionDataflowBlockOptions.EnsureOrdered = true;
-            executionDataflowBlockOptions.MaxDegreeOfParallelism = -1;
+            executionDataflowBlockOptions.MaxDegreeOfParallelism = 1;
             executionDataflowBlockOptions.BoundedCapacity = -1;
             _renderDataSessionTransformBlock = new ActionBlock<RenderDataItem>(renderDataItem =>
             {
-                var imageRender = renderDataItem.RenderSession.RenderData();
 
+                var needRender = false;
                 lock (_syncLock)
                 {
                     if (renderDataItem.TimestampTick < _currentRenderSessionTimestampTick)
                         return;
                     _currentRenderSessionTimestampTick = renderDataItem.TimestampTick;
+                    needRender = (DateTime.Now - _lastTick).TotalMilliseconds > 30;
+                    if (needRender) _lastTick = DateTime.Now;
 
                 }
-                RenderRequested?.Invoke(this, imageRender);
-
+                if (needRender)
+                {
+                    var imageRender = renderDataItem.RenderSession.RenderData();
+                    RenderRequested?.Invoke(this, new RenderSet(renderDataItem.RenderSession.RenderContext) { ImageRender = imageRender });
+                }
             }, executionDataflowBlockOptions);
 
 
@@ -56,6 +62,8 @@ namespace HPImageViewer.Rendering
 
 
         }
+
+
 
     }
 }

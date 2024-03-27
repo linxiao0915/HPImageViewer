@@ -1,13 +1,6 @@
 ﻿using HPImageViewer.Tools;
 using Microsoft.Xaml.Behaviors;
-using System;
-using System.CodeDom;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using HPImageViewer.Core;
-using OpenCvSharp;
-using System.ComponentModel;
 
 namespace HPImageViewer.Behaviors
 {
@@ -24,14 +17,21 @@ namespace HPImageViewer.Behaviors
             AssociatedObject.MouseMove += AssociatedObject_MouseMove;
             AssociatedObject.MouseUp += AssociatedObject_MouseUp;
             AssociatedObject.MouseWheel += AssociatedObject_MouseWheel;
+            AssociatedObject.MouseDoubleClick += AssociatedObject_MouseDoubleClick;
         }
 
 
         private void AssociatedObject_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.OriginalSource is ImageView imageView == false) return;
-            (ActivatedTool as IMouseWheelTool)?.OnMouseWheel(imageView, e);
+            (ActivatedTool as IMouseTool)?.OnMouseWheel(imageView, e);
 
+        }
+
+        private void AssociatedObject_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is ImageView imageView == false) return;
+                    (ActivatedTool as IMouseTool)?.OnMouseDoubleClick(imageView, e);
         }
 
         private void AssociatedObject_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -54,11 +54,12 @@ namespace HPImageViewer.Behaviors
                 ActivatedTool?.OnMouseDown(imageView, e);
         }
 
+
         private ITool ActivatedTool => AssociatedObject.ActivatedToolInternal;
 
 
 
-    
+
 
         /// <summary>
         /// Called when the behavior is being detached from its AssociatedObject, but before it has actually occurred.

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using HalconDotNet;
 using HPImageViewer.Core;
 using HPImageViewer.Core.Persistence;
+using HPImageViewer.Extensions.Extensions;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
@@ -17,16 +18,19 @@ namespace HPImageViewerSample
     {
         public MainWindowViewModel(IHPImageViewer imageViewer)
         {
+            AggregationIndexerFactory.Instance.RegisterDefaultIndexerFactory();
             _imageViewer = imageViewer;
             _imageViewer.ImageViewerDesc = new ImageViewerDesc()
             {
                 ROIDescs = new List<ROIDesc>()
                 {
-                    new RotatedRectDesc(){Angle=30},
+                    //new RotatedRectDesc(){Angle=30},
                   //  new RotatedRectDesc(){Angle=60},
                   //    new RotatedRectDesc(){Angle=90},
                   //new RotatedRectDesc(){Angle=120},
                   //new RotatedRectDesc(){Angle=150},
+                   new BoxDesc(){Top=10,Left=10,Width=200,Height=200,BandWidth=30,Color="#FFFF00"},
+                   new QuadRectangleDesc(){Top=10,Left=300,Width=200,Height=200,BandWidth=30,Color="#FFFF00",BandLength=80},
                 }
             };
         }
@@ -42,15 +46,26 @@ namespace HPImageViewerSample
 
                 try
                 {
-                    //BitmapImage bitmap = new BitmapImage(new Uri(selectedFileName, UriKind.Relative));
-                    //bitmap.Freeze();
+                    /*
+                     BitmapImage bitmap = new BitmapImage(new Uri(selectedFileName, UriKind.Relative));
+                       bitmap.Freeze();
 
-                    //var image = Cv2.ImRead(selectedFileName);
+                       //var image = Cv2.ImRead(selectedFileName);
 
-                    HOperatorSet.ReadImage(out var hImage, selectedFileName);
-                    _imageViewer.FitNewImageToArea = true;
-                    _imageViewer.SetImage(hImage);
+                        HOperatorSet.ReadImage(out var hImage, selectedFileName);
+                       _imageViewer.FitNewImageToArea = true;
+                       _imageViewer.SetImage(bitmap);
 
+                    */
+
+                    HOperatorSet.ReadImage(out var image, selectedFileName);
+                    //_imageViewer.FitNewImageToArea = true;
+                    //var bitmap = new Bitmap(openFileDialog.FileName);
+
+
+                    //  var image = Cv2.ImRead(selectedFileName, ImreadModes.Grayscale);
+
+                    _imageViewer.SetImage(image);
                 }
                 catch (Exception ex)
                 {
@@ -59,6 +74,8 @@ namespace HPImageViewerSample
             }
 
         }
+
+
         [RelayCommand]
         private void ExecuteOpenDocument()
         {

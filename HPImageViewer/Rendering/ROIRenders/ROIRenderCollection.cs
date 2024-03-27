@@ -62,7 +62,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             //RoiDescs.Add(item.ROIDesc);
         }
 
-        private void Item_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             RoisChanged?.Invoke(this, null);
         }

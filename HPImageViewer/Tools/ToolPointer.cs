@@ -1,10 +1,11 @@
 ﻿using HPImageViewer.Rendering.ROIRenders;
+using HPImageViewer.Utils;
 using System.Windows;
 using System.Windows.Input;
 
 namespace HPImageViewer.Tools
 {
-    internal class ToolPointer : ITool, IMouseWheelTool
+    internal class ToolPointer : ITool, IMouseTool
     {
         private enum SelectionMode
         {
@@ -33,7 +34,7 @@ namespace HPImageViewer.Tools
 
             foreach (var item in drawingCanvas.ROIRenderCollection.GetSelectedItems())
             {
-                int handleNumber = item.HitTest(point);
+                var handleNumber = item.HitTest(point);
 
                 if (handleNumber > 0)
                 {
@@ -92,7 +93,7 @@ namespace HPImageViewer.Tools
                     drawingCanvas.ROIRenderCollection.UnselectAll();
 
 
-                var transformedPoint = drawingCanvas.CoordTransform.ToDomain(point);
+                var transformedPoint = drawingCanvas.CoordTransform.ToDomain(point.ToPoint());
                 var selectionRectangle = new SelectionRectangle() { Left = transformedPoint.X, Top = transformedPoint.Y, Width = 1d / drawingCanvas.Scale, Height = 1d / drawingCanvas.Scale };
 
                 ToolObject.PrepareNewObject(drawingCanvas, selectionRectangle);
@@ -212,11 +213,11 @@ namespace HPImageViewer.Tools
             {
                 var r = (SelectionRectangle)drawingCanvas.ROIRenderCollection.AddingRoiRender;
                 r.Normalize();
-                var rect = r.Rectangle;
+                var rect = r.Rect;
                 drawingCanvas.ROIRenderCollection.AddingRoiRender = null;
                 foreach (var rOIRenders in drawingCanvas.ROIRenderCollection)
                 {
-                    if (rOIRenders.IntersectsWith(rect))
+                    if (rOIRenders.IntersectsWith(rect.ToWindowRect()))
                     {
                         rOIRenders.IsSelected = true;
                     }
@@ -239,6 +240,10 @@ namespace HPImageViewer.Tools
                 || e.RightButton == MouseButtonState.Pressed) return;
             OnMouseWheelZoomingHandler(drawingCanvas, e);
 
+        }
+
+        public void OnMouseDoubleClick(IDrawingCanvas drawingCanvas, MouseButtonEventArgs e)
+        {
         }
 
         public static void OnMouseWheelZoomingHandler(IDrawingCanvas drawingCanvas, MouseWheelEventArgs e)

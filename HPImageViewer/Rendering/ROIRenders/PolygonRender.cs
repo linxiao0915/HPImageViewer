@@ -78,14 +78,14 @@ namespace HPImageViewer.Rendering.ROIRenders
                 }
                 if (IsClosed)
                 {
-                    drawingContext.DrawPolygon(fillBrush, new Pen(Brush, ROIDesc.StrokeThickness), Points.Select(s => RenderTransform.ToDevice(s.ToWindowPoint()).ToPoint()));
+                    drawingContext.DrawPolygon(fillBrush, new Pen(Brush, ROIDesc.StrokeThickness), Points.Select(s => RenderTransform.ToDevice(s)));
                 }
                 else
                 {
                     for (int i = 0; i < Points.Count - 1; i++)
                     {
 
-                        drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i].ToWindowPoint()).ToPoint(), RenderTransform.ToDevice(Points[i + 1].ToWindowPoint()).ToPoint());
+                        drawingContext.DrawLine(new Pen(Brush, ROIDesc.StrokeThickness), RenderTransform.ToDevice(Points[i]).ToWindowPoint().ToPoint(), RenderTransform.ToDevice(Points[i + 1]));
                     }
                 }
 
@@ -105,7 +105,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                         return i;
                 }
             }
-            if (IsPointInPolygon(RenderTransform.ToDomain(point), PolygonDesc))
+            if (IsPointInPolygon(RenderTransform.ToDomain(point.ToPoint()), PolygonDesc))
             {
                 return 0;
             }
@@ -125,7 +125,7 @@ namespace HPImageViewer.Rendering.ROIRenders
                }).ToList();
         }
 
-        protected override void MoveHandleToInteranl(int handleNumber, Point point)
+        protected override void MoveHandleToInternal(int handleNumber, Point point)
         {
 
             Points[handleNumber - 1] = point.ToPoint();
@@ -133,18 +133,18 @@ namespace HPImageViewer.Rendering.ROIRenders
 
         public override Point GetHandle(int handleNumber)
         {
-            return RenderTransform.ToDevice(Points[handleNumber - 1].ToWindowPoint());
+            return RenderTransform.ToDevice(Points[handleNumber - 1]).ToWindowPoint();
         }
 
-        public static bool IsPointInPolygon(Point point, PolygonDesc polygon)
+        public static bool IsPointInPolygon(Core.Primitives.Point point, PolygonDesc polygon)
         {
             int intersectionCount = 0;
             int n = polygon.Vertices.Count;
 
             for (int i = 0; i < n; i++)
             {
-                Point p1 = polygon.Vertices[i].ToWindowPoint();
-                Point p2 = polygon.Vertices[(i + 1) % n].ToWindowPoint();
+                Core.Primitives.Point p1 = polygon.Vertices[i];
+                Core.Primitives.Point p2 = polygon.Vertices[(i + 1) % n];
 
                 if (IsIntersect(point, p1, p2))
                 {
@@ -155,7 +155,7 @@ namespace HPImageViewer.Rendering.ROIRenders
             return intersectionCount % 2 == 1;
         }
 
-        private static bool IsIntersect(Point point, Point p1, Point p2)
+        private static bool IsIntersect(Core.Primitives.Point point, Core.Primitives.Point p1, Core.Primitives.Point p2)
         {
             if (point.Y > Math.Max(p1.Y, p2.Y) || point.Y <= Math.Min(p1.Y, p2.Y))
             {

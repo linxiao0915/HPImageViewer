@@ -30,7 +30,7 @@ namespace HPImageViewer.Tools
         public override void OnMouseMove(IDrawingCanvas drawingCanvas, MouseEventArgs e)
         {
             var currentPoint = e.GetPosition(drawingCanvas);
-            var transformedStartPoint = drawingCanvas.CoordTransform.ToDomain(currentPoint);
+            var transformedStartPoint = drawingCanvas.CoordTransform.ToDomain(currentPoint.ToPoint());
             if (_isAdding)
             {
                 var polygonRender = ((PolygonRender)drawingCanvas.ROIRenderCollection.AddingRoiRender);
@@ -38,8 +38,8 @@ namespace HPImageViewer.Tools
                 {
                     polygonRender.Points.RemoveAt(polygonRender.Points.Count - 1);
                 }
-                polygonRender.Points.Add(transformedStartPoint.ToPoint());
-                _floatPoint = transformedStartPoint;
+                polygonRender.Points.Add(transformedStartPoint);
+                _floatPoint = transformedStartPoint.ToWindowPoint();
                 drawingCanvas.Rerender();
             }
         }
@@ -62,7 +62,7 @@ namespace HPImageViewer.Tools
             if (e.ChangedButton == MouseButton.Left)
             {
                 var startPoint = e.GetPosition(drawingCanvas);
-                var transformedStartPoint = drawingCanvas.CoordTransform.ToDomain(startPoint);
+                var transformedStartPoint = drawingCanvas.CoordTransform.ToDomain(startPoint.ToPoint());
 
                 if (_polygonRender == null)
                 {
@@ -72,7 +72,7 @@ namespace HPImageViewer.Tools
 
 
 
-                _polygonRender.Points.Add(transformedStartPoint.ToPoint());
+                _polygonRender.Points.Add(transformedStartPoint);
                 _isAdding = true;
                 drawingCanvas.Rerender();
                 return;

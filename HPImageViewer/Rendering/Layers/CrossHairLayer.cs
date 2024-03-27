@@ -19,7 +19,7 @@ namespace HPImageViewer.Rendering.Layers
         protected override void OnRender(RenderContext renderContext)
         {
             var image = renderContext.Image;
-            renderContext.RenderTransform.ToDevice(image.Width / 2, image.Height / 2, out var dx, out var dy);
+            renderContext.RenderTransform.ToDevice(renderContext.ImageSize.Width / 2, renderContext.ImageSize.Height / 2, out var dx, out var dy);
             var width = renderContext.RenderSize.Width;
             var height = renderContext.RenderSize.Height;
             var drawingContext = renderContext.DrawingContext;
@@ -36,10 +36,12 @@ namespace HPImageViewer.Rendering.Layers
         protected override bool NeedRender(RenderContext renderContext)
         {
             var image = renderContext.Image;
-            if (image == null) return false;
-
-            renderContext.RenderTransform.ToDevice(image.Width / 2, image.Height / 2, out var dx, out var dy);
             var renderSize = renderContext.RenderSize;
+            var imageSize = renderContext.ImageSize;
+            if (image == null || imageSize == null) return false;
+
+            renderContext.RenderTransform.ToDevice(renderContext.ImageSize.Width / 2, renderContext.ImageSize.Height / 2, out var dx, out var dy);
+
             return Math.Abs(dx - renderSize.Width / 2) <= renderSize.Width / 2 || Math.Abs(dy - renderSize.Height / 2) <= renderSize.Height / 2;
 
         }

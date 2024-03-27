@@ -1,4 +1,5 @@
 ﻿
+using System;
 using HPImageViewer.Core.Persistence;
 
 namespace HPImageViewer.Core

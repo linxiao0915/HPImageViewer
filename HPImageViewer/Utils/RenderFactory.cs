@@ -32,5 +32,14 @@ namespace HPImageViewer.Utils
         {
             return new RotatedRectRender(polygonDesc);
         }
+
+        private static BoxRender CreateROIRenderInternal(BoxDesc boxDesc)
+        {
+            return new BoxRender(boxDesc);
+        }
+        private static QuadRectangleRender CreateROIRenderInternal(QuadRectangleDesc quadRectangleDesc)
+        {
+            return new QuadRectangleRender(quadRectangleDesc);
+        }
     }
 }

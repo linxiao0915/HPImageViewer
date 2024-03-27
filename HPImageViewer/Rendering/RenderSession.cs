@@ -7,11 +7,11 @@ namespace HPImageViewer.Rendering
     internal class RenderSession
     {
         IDrawingCanvas _drawingCanvas;
-        RenderContext _renderContext;
+        public RenderContext RenderContext { get; }
         public RenderSession(IDrawingCanvas drawingCanvas, RenderContext renderContext)
         {
             _drawingCanvas = drawingCanvas;
-            _renderContext = renderContext;
+            RenderContext = renderContext;
 
         }
 
@@ -38,7 +38,7 @@ namespace HPImageViewer.Rendering
                         {
                             return;
                         }
-                        imageRender = new ImageRender(renderContext.Image) { RenderTransform = renderContext.RenderTransform };
+                        //  imageRender = new ImageRender(renderContext.Image) { RenderTransform = renderContext.RenderTransform };
                         imageRender.Calculate(renderContext);
 
                     }, cancellationToken);
@@ -63,8 +63,12 @@ namespace HPImageViewer.Rendering
 
         public ImageRender RenderData()
         {
-            var imageRender = new ImageRender(_renderContext.Image) { RenderTransform = _renderContext.RenderTransform };
-            imageRender.Calculate(_renderContext);
+            if (RenderContext.Image==null)
+            {
+                return null;
+            }
+            var imageRender = new ImageRender(RenderContext.Image) { RenderTransform = RenderContext.RenderTransform };
+            imageRender.Calculate(RenderContext);
             return imageRender;
         }
 
