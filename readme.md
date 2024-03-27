@@ -117,7 +117,7 @@ ROI：
 
 
 
-![](.\大图.png)
+![](https://github.com/guyyoulove/HPImageViewer/blob/develop/%E5%A4%A7%E5%9B%BE.png)
 
 
 
